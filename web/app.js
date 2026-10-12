@@ -939,6 +939,20 @@ function wire() {
     app.inspector.render();
     compileNow(true);
   };
+  // files dropped on the page: a patch or a QTS script opens, images are added
+  window.addEventListener("dragover", (e) => { if (e.dataTransfer && [...e.dataTransfer.types].includes("Files")) e.preventDefault(); });
+  window.addEventListener("drop", async (e) => {
+    if (!e.dataTransfer || !e.dataTransfer.files.length) return;
+    e.preventDefault();
+    for (const f of e.dataTransfer.files) {
+      if (/^image\//.test(f.type) || /\.(png|jpe?g|gif|bmp|webp)$/i.test(f.name)) {
+        state.userImages.set(f.name.toLowerCase(), { name: f.name, data: await f.arrayBuffer() });
+        log(`image ${f.name} added: pick it in an Image node`);
+        app.inspector.render();
+        compileNow(true);
+      } else await openFile(f);
+    }
+  });
   const typing = () => { const a = document.activeElement; return a && (a.tagName === "INPUT" || a.tagName === "TEXTAREA" || a.tagName === "SELECT"); };
   window.addEventListener("keydown", (e) => {
     const mod = e.metaKey || e.ctrlKey;

@@ -61,7 +61,7 @@ async function run() {
         bitmaps.set(img, await createImageBitmap(new Blob([f.data])));
       }
       const script = new Script();
-      if (!script.load(text, images)) throw new Error("script: " + script.errors[0]);
+      if (!script.load(text, images)) { row.skip = "the script doesn't load in QTS either: " + script.errors[0]; addRow(row, ""); console.log("RESULT " + JSON.stringify(row)); continue; }
       const { patch, warnings } = importCan(text, ex.file);
       const p2 = G.parse(G.serialize(patch));      // what a saved file would give
       row.nodes = p2.nodes.length;

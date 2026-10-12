@@ -3,13 +3,64 @@
 Owner: Jim Bumgardner (jbum). Live at https://fragtime.jbum.com/. Started 2026-10-12 as an
 exact copy of ~/Documents/websites/pixelmagic (QTS / Pixel Magic, qts.jbum.com, kept as it was for
 history; that repo and site are not to be changed from here). The name plays on QTS = QuickTime
-Synthesizer: Fragtime = fragment shaders over time. The big change to come is the editor (node-based
-vs hierarchical list, under discussion). Everything below still describes the inherited code.
+Synthesizer: Fragtime = fragment shaders over time. No GitHub remote yet (local git only).
+`COMPETITION.md` is jbum's own research notes: leave it uncommitted (it's in .git/info/exclude).
 
-## QTS / Pixel Magic notes (inherited)
+## The node editor (PLAN.md phases 0–4 done, 2026-10-12)
+jbum chose a graph of coarse nodes over a hierarchical list ("node-editor is probably more flexible
+and will make more complicated constructions possible"; the XML-ish `<seq>` scripts are going away).
+PLAN.md is the design; this is what isn't obvious from the code.
+- **Model** (`web/engine/graph.js`): a patch is JSON, `serialize()` writes one node per line. Node
+  types: source / image / expr (all "formula" nodes = a QTS leaf `<seq>`), sequence, blend, time,
+  output. Wires are named ports; an expression reads port `p` as `$p` with the full QTS syntax
+  (`$p`, `$p[t]`, `$p[x,y]`, `$p[x,y,t]`, `$p{d,a}`). Ids and ports must start with a letter (the
+  lexer's `$name` rule).
+- **Compiler** (`graph_glsl.js`) reuses glsl.js's `Gen` (phase 0 exported it; a `$name` asks the
+  compiler's `sampleCall`). Every node function takes a clock `Clk{gtime,start,dur}`: callers derive
+  their inputs' clocks (debut relative to the caller, duration or the caller's, `debut:"last"` =
+  after the previous Sequence input). Durations are static, so a node with one possible length gets
+  constants — needed: deep zooms (endwidth) differed by up to 200 levels when `1/(nf-1)` was a
+  runtime division instead of glsl.js's folded constant. Wire sampling ignores lifetimes (as glsl.js
+  did); Sequence painting checks them. Painting threads the canvas through nested sequences, so a
+  blend layer blends onto what an outer sequence painted (QTS order exactly).
+- **Importer** (`import_can.js`): the gate is `node tests/import_test.js` (headless Chrome, Metal):
+  every example drawn by its old shader and by its imported patch at three moments must match
+  (73/73, 0 bytes > 2 levels; Noise Etude identical). Leaves a later normal sibling covers and that
+  others read are wired, not painted; one-input sequences fold away; a node read from lifetimes that
+  disagree is copied (star's `starmask_2`). Layout: columns by longest path, rows as a tidy tree.
+- **Editor**: `desk.js` (ported from the Syd editor: view+zoom, `track()` captures on the desk wrap,
+  second finger aborts and pinches; nodes are HTML so thumbnail canvases persist), `inspector.js`
+  (edits as you type, one undo step per field visit, never rebuilt while a text field has focus),
+  `app.js` (patch, undo, compile, thumbnails, files, movies). `window.fragtime` exposes app/state for
+  tests. Palette templates with a node selected insert after it; Delete heals a chain.
+- **Thumbnails, learned the hard way**: on Metal a draw of a big shader costs roughly one pixel's
+  program time whatever the size (Noise Etude: ~7 ms for a 48×36 draw), and every copy out of WebGL
+  (readPixels, drawImage of the canvas) waits ~30–40 ms for the GPU. One draw + copy per node made
+  Noise Etude play at 2 fps. Now: a preview build (`opts.preview`) where `mainImage` picks the node
+  from its tile (`ft_nodes[]` uniform), ONE draw fills an atlas, one copy out, then 2D copies to the
+  node canvases; refreshed once a second while playing. `gl.finish()` is a no-op in Chrome — don't
+  time with it.
+- Site is GPU only: no Frame tab; `worker.js`/`bench.*` aren't copied by build_web.py (the wasm and
+  JS engines stay in the repo for the tests). Examples ship as `.fragtime` (build/import_examples.js)
+  plus the `.can`; `examples/images.json` lists the image files.
 
-Started 2026-10-10.
-See README.md for the layout; this file is what isn't obvious from the code.
+## Tests
+- `node tests/graph_test.js` — model/importer/compiler in node (every example round-trips).
+- `node tests/import_test.js [-k regex]` — the GPU gate above (+ tests/patches/*.fragtime must compile and draw).
+- `node tests/editor_test.js` — the built site, real mouse/key/touch input via CDP: select, edit,
+  undo, errors, palette insert, wire drag, loop refusal, delete, save frame + PNG/MP4 movies vs native
+  `qts`, Source tab, reload, New, Open of a .can; touch pan/pinch/tap/drag/hold-to-select.
+- `scratchpad/drive.js URL out.png WxH ms [js…]` (gitignored) — screenshot + evaluate, for looking.
+- Headless Chrome needs `--use-angle=metal` for the real GPU. Timings there run slower than a real
+  window (Noise Etude ~25 fps alone headless).
+
+## Not done / next
+- PLAN.md phase 5: a Feedback node (previous frame; needs a second pass and ping-pong textures).
+- Noise Etude's patch is tall (21 scenes in one column); a better layout, or collapsible groups.
+- Blend `opacity` isn't implemented (QTS never used it either).
+- The social card is still build_web.py's sun frame with the title.
+
+## QTS / Pixel Magic notes (inherited, 2026-10-10..11; the Frame tab and wasm parts no longer apply to the site)
 
 ## Where things came from
 - `old_pc_src/QTS` (2001–03) is the source of the port; `old_pc_src/pixmagic` (2000, form + presets)

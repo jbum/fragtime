@@ -1,10 +1,26 @@
 # Fragtime
 
-The successor of **QTS / Pixel Magic** (https://qts.jbum.com/, repo jbum/pixelmagic, kept as it was):
-Fragtime starts from an exact copy of that code and moves on to a shader-first editor. Live at
-**https://fragtime.jbum.com/**. The rest of this file still describes the code as ported.
+Pictures and movies from a formula for every pixel, plus time. Formulas are nodes wired together on a
+desk; the patch compiles to one GLSL fragment shader that plays live on the GPU while you edit it, and
+renders movies (MP4 or PNG frames), stand-alone pages and Shadertoy shaders. Live at
+**https://fragtime.jbum.com/**.
 
-## QTS / Pixel Magic
+Fragtime is the successor of **QTS / Pixel Magic** (https://qts.jbum.com/, repo jbum/pixelmagic, kept as
+it was): it started from an exact copy of that code. QTS scripts (`.can`) import as patches and draw the
+same pixels.
+
+- `web/engine/graph.js` — the patch: JSON, nodes (source, image, expr, sequence, blend, time, output),
+  wires as `$name` ports. `graph_glsl.js` compiles a patch to GLSL with the expression generator of
+  `glsl.js`; `import_can.js` turns a QTS script into a patch.
+- `web/index.html`, `app.js`, `desk.js` (the node desk), `inspector.js` — the editor; `shader.js` — the
+  WebGL2 player, also embedded in the downloadable page; `language.html`, `about.html`.
+- `build/build_web.py` assembles `build/web/` (examples imported to `.fragtime`, thumbnails rendered by
+  the native `qts`), `build/deploy_web.sh` publishes it.
+- Tests: `tests/graph_test.js` (node), `tests/import_test.js` (every example, old shader vs imported
+  patch, on the GPU in headless Chrome), `tests/editor_test.js` (the built editor driven with real
+  input, frames and movies checked against native `qts`).
+
+## The QTS / Pixel Magic code it started from
 
 The renderer of **QTS** ("QuickTime Synthesizer", 2001–2003), the last form of Jim Bumgardner's
 *Pixel Magic* (1995–), ported from its Windows/MFC C++ sources to a portable library, a native

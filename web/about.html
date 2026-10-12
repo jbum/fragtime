@@ -4,19 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>About Fragtime</title>
-<meta name="description" content="The history of Pixel Magic and QTS, and the Noise Etude (2001).">
-<meta property="og:title" content="Noise Etude (2001) — QTS">
-<meta property="og:description" content="A 131-second piece made of Perlin noise, rendered by QTS, Jim Bumgardner's pixel-formula synthesizer.">
+<meta name="description" content="Fragtime, and the history behind it: Pixel Magic, QTS, and the Noise Etude (2001).">
+<meta property="og:title" content="Noise Etude (2001) — Fragtime">
+<meta property="og:description" content="A 131-second piece made of Perlin noise in QTS, Jim Bumgardner's pixel-formula synthesizer, playing live as a shader.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://fragtime.jbum.com/about.html">
-<meta property="og:image" content="https://fragtime.jbum.com/assets/card.png?v=1">
+<meta property="og:image" content="https://fragtime.jbum.com/assets/card.png?v=2">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/icon.png">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
-  <h1><a href="./">QTS</a> <small>about</small></h1>
+  <h1><a href="./">Fragtime</a> <small>about</small></h1>
   <nav><a class="about" href="./">Editor</a> <a class="about" href="language.html">Language</a></nav>
 </header>
 <article>
@@ -29,13 +29,18 @@
   <button id="etudePlay" class="etudePlay" aria-label="play">▶ play it as a shader</button>
 </div>
 <p class="etudeBar"><span id="etudeStatus"></span><a id="etudeToggle" href="assets/noise_etude.mp4" hidden>watch the movie instead</a></p>
-<p>131 seconds, 24 frames a second, every pixel a formula. Written as a <a href="?x=noiseetude.can">QTS script</a>
-in February 2001 and rendered then over many hours. Here the script is compiled to a GLSL shader and your GPU
-plays it live; the <a id="etudeMovieLink" href="assets/noise_etude.mp4">movie</a> was rendered by the same code
-compiled from C++ to WebAssembly and native, in about three minutes.
-Open <a href="./?x=noiseetude.can">noiseetude.can</a> in the editor to scrub through it or render it yourself.</p>
+<p>131 seconds, 24 frames a second, every pixel a formula. Written as a QTS script in February 2001 and rendered
+then over many hours. Here it is a Fragtime patch, compiled to a GLSL shader that your GPU plays live; the
+<a id="etudeMovieLink" href="assets/noise_etude.mp4">movie</a> was rendered by the original renderer, ported from
+C++, in about three minutes. Open <a href="./?x=noiseetude">its patch</a> in the editor to see how it is made: a
+sequence of twenty-one scenes, each a layer that reads its noise fields, from the title to the credits.</p>
 
 <h2>What this is</h2>
+<p><strong>Fragtime</strong> makes pictures and movies from a formula for every pixel, plus time. Formulas are nodes,
+wired together on a desk: one warps another, masks a third, plays a fourth at another speed, and a sequence strings
+them into scenes. The whole patch compiles to a single fragment shader, so it plays live on the GPU while you edit it,
+and renders movies, stand-alone pages and Shadertoy shaders. The name is a fragment shader over time, and a nod to QTS,
+the QuickTime Synthesizer, where it comes from.</p>
 <p><strong>Pixel Magic</strong> began in 1995 as a Photoshop filter and then a Macintosh program: a dialog with a
 formula for the red, green and blue of each pixel in terms of <code>x</code>, <code>y</code>, the polar coordinates
 <code>a</code> and <code>d</code>, and <code>t</code>, time, so it could write QuickTime movies as well as stills.
@@ -44,16 +49,11 @@ It was ported to Windows in 1998–2000, where it gained a preset browser and a 
 picture is described by a script of nested sequences, each with a start time and duration, which can sample one
 another, zoom, tile, layer with Photoshop-style blend modes, and sample images. It is the program that made
 Noise Etude.</p>
-<p>This site is the QTS renderer ported from its C++ source to run in the browser. The expression compiler,
-the noise, fractal and easing functions, the sequence timing and the renderer are the originals' logic, kept
-faithful enough that the sample scripts from 2001 render as they did (a few bugs of the day included, where they
-show). The math library is compiled in, so a frame renders the same bits on every machine.
-Rendering runs in Web Workers on all your cores; MP4s are encoded in the browser with WebCodecs.</p>
-<p>A second compiler turns a script into a GLSL fragment shader, so the same formulas play in real time on the GPU:
-the editor's <b>Live shader</b> tab, its usual view, which also renders movies and can save the loop as a stand-alone
-page or as a Shadertoy-ready shader. The <b>Frame</b> tab and the "exact" movie option use the original renderer.</p>
-<p>The same code builds a native command-line renderer (<code>qts</code>) that writes PNG frames or pipes raw
-video to ffmpeg; that is what rendered the movie of Noise Etude.</p>
+<p>In 2026 QTS's renderer was ported from its C++ source to the browser, faithfully enough that the 2001 scripts
+render as they did (<a href="https://qts.jbum.com/">qts.jbum.com</a> keeps that port as it was). A compiler from its
+scripts to GLSL followed, then Fragtime: the same language and the same shader, with the tree of sequences turned
+into a graph of nodes. Every QTS script imports as a patch and draws the same pixels; the examples are the QTS
+archive's.</p>
 
 <h2>Related</h2>
 <p><a href="https://syd.jbum.com/">Syd</a> is the audio counterpart from the same years: a software synthesizer

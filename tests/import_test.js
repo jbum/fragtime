@@ -30,12 +30,14 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const quit = (code) => { chrome.kill(); server.kill(); setTimeout(() => { try { fs.rmSync(profile, { recursive: true, force: true }); } catch (_) {} process.exit(code); }, 300); };
 setTimeout(() => { console.error("timed out"); summary(); quit(1); }, timeout * 1000).unref();
 let ok = 0, bad = 0, failed = 0;
+let skipped = 0;
 function report(x) {
+  if (x.skip) { skipped++; console.log(`skip   ${x.file.padEnd(22)} ${x.skip}`); return; }
   if (x.error) { failed++; console.log(`FAIL   ${x.file.padEnd(22)} ${x.error.split("\n")[0]}`); return; }
   if (x.ok) ok++; else bad++;
   console.log(`${x.ok ? "match " : "DIFFER"} ${x.file.padEnd(22)} ${String(x.nodes).padStart(3)} nodes  ${String(x.pct).padStart(7)}% differ, max ${String(x.max).padStart(3)}, ${String(x.bigPct).padStart(7)}% > 2   ${x.kb} KB${x.note ? "  " + x.note.slice(0, 120) : ""}`);
 }
-function summary() { console.log(`\n${ok} match, ${bad} differ, ${failed} failed`); }
+function summary() { console.log(`\n${ok} match, ${bad} differ, ${failed} failed, ${skipped} skipped`); }
 
 (async () => {
   const portFile = path.join(profile, "DevToolsActivePort");

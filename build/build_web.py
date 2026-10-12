@@ -147,7 +147,7 @@ def main():
             font = small = ImageFont.load_default()
         for dx, dy in ((2, 2), (0, 0)):
             col = (0, 0, 0) if (dx, dy) == (2, 2) else (255, 255, 255)
-            draw.text((50 + dx, 470 + dy), "Fragtime – Pixel Magic in the browser", font=font, fill=col)
+            draw.text((50 + dx, 470 + dy), "Fragtime", font=font, fill=col)
             draw.text((52 + dx, 550 + dy), "a formula for every pixel, plus time — fragtime.jbum.com", font=small, fill=col)
         card.save(os.path.join(assets, "card.png"))
 

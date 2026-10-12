@@ -158,6 +158,12 @@ for the inherited tests, just not on the site.
 
 ## Phases, each a commit with its test green
 
+Status (2026-10-12): phases 0–4 are done and published; phase 5 is open. What was built differs
+from the plan in places: lifetimes are node params (debut/duration relative to the caller) rather
+than per-input settings of a Sequence; thumbnails come from one atlas draw, not one draw per node
+(see CLAUDE.md for why); oversample can be overridden per node; Delete heals a chain.
+
+
 0. **Prep** (small, mechanical): export `Gen`, `LIB`, `VARMAP`, `f`, `gradientText` from glsl.js;
    let `Parser` take a port map in place of `seqNames` (same shape: name → integer id). Existing
    tests still pass (`tests/glsl_compile.js`, `tests/shader_test.js -g`).

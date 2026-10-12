@@ -1,13 +1,13 @@
-// etude.js -- plays Noise Etude on the About page as a shader: the script is fetched,
-// compiled to GLSL in the browser and run on the GPU. The movie stays as the fallback.
-import { Script } from "./engine/seq.js";
+// etude.js -- plays Noise Etude on the About page as a shader: its patch (the 2001 script,
+// imported) is fetched, compiled to GLSL in the browser and run on the GPU. The movie stays as
+// the fallback.
 import { Image as QImage } from "./engine/image.js";
-import { compileScriptToGLSL } from "./engine/glsl.js";
+import { parse } from "./engine/graph.js";
+import { compilePatchToGLSL } from "./engine/graph_glsl.js";
 import { ShaderPlayer } from "./shader.js";
 
 const $ = (s) => document.querySelector(s);
-const SCRIPT = "examples/noiseetude.can";
-const IMAGE_RE = /\b(?:image|source|bmp)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s\/>]+))/gi;
+const PATCH = "examples/noiseetude.fragtime";
 const box = $("#etudeBox"), canvas = $("#etudeView"), video = $("#etudeMovie"), poster = $("#etudePoster");
 const playBtn = $("#etudePlay"), status = $("#etudeStatus"), toggle = $("#etudeToggle"), movieLink = $("#etudeMovieLink");
 let player = null, started = false;
@@ -37,13 +37,12 @@ async function start() {
     player = new ShaderPlayer(canvas);   // throws without WebGL2
   } catch (e) { showMovie("No WebGL2 here, so the movie instead."); return; }
   try {
-    status.textContent = "fetching the script…";
-    const text = new TextDecoder("latin1").decode(new Uint8Array(await (await fetch(SCRIPT)).arrayBuffer()));
+    status.textContent = "fetching the patch…";
+    const patch = parse(await (await fetch(PATCH)).text());
     const images = new Map(), bitmaps = new Map();
-    let m;
-    while ((m = IMAGE_RE.exec(text))) {
-      const name = m[1] ?? m[2] ?? m[3];
-      if (images.has(name)) continue;
+    for (const node of patch.nodes) {
+      const name = node.params && node.params.image;
+      if (!name || images.has(name)) continue;
       // the archive's .bmp files are served as .png
       const base = name.replace(/\.[^.]*$/, "");
       let data = null;
@@ -56,9 +55,7 @@ async function start() {
       images.set(name, img); images.set(name.toLowerCase(), img);
       bitmaps.set(img, await createImageBitmap(new Blob([data])));
     }
-    const script = new Script();
-    if (!script.load(text, images)) throw new Error(script.errors[0]);
-    const g = compileScriptToGLSL(script);
+    const g = compilePatchToGLSL(patch, images);
     status.textContent = `compiling ${(g.source.length / 1024).toFixed(0)} KB of shader on the GPU, a few seconds…`;
     await new Promise((r) => setTimeout(r, 30));   // let the status paint before the GPU compile blocks
     player.setShader(g.source, g.images.map((im) => ({ name: "", source: bitmaps.get(im) })), g.duration);
