@@ -9,3 +9,4 @@ scratchpad/
 build/deploy.dest
 CLAUDE.local.md
 local/*
+build/out/

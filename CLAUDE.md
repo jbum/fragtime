@@ -72,7 +72,8 @@ PLAN.md is the design; this is what isn't obvious from the code.
 ## Build / test / publish
 - Native: `make` → `./qts`. Wasm: `source ~/emsdk/emsdk_env.sh && build/build_wasm.sh web` (and
   `node` for tests). Site: `python3 build/build_web.py` (needs `./qts`, Pillow, ffmpeg; renders
-  thumbnails; takes the movie from `build/out/noise_etude_720.mp4`), then `build/deploy_web.sh`
+  thumbnails; takes the movie from `build/out/noise_etude_720.mp4`, which is not in git: make it
+  with `./qts` as README.md shows), then `build/deploy_web.sh`
   (rsync --delete to `$DEPLOY_DEST` or the destination in `build/deploy.dest`;
   server details are in the uncommitted `CLAUDE.local.md`).
 - `node tests/compare_wasm.js` after `build/build_wasm.sh node`: wasm and native must be
