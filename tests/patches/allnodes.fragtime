@@ -1,0 +1,11 @@
+{"fragtime":1,"title":"allnodes",
+  "nodes": [
+    {"id":"n1","type":"source","x":0,"y":0,"params":{"mono":"noise(x*8,y*8,t)","duration":2}},
+    {"id":"n2","type":"source","x":0,"y":150,"params":{"rgb":"x,y,t","duration":2}},
+    {"id":"mix","type":"expr","x":250,"y":75,"inputs":{"a":"n1","b":"n2"},"params":{"pix":"terp($a[x*2,y],$b,x)","debut":"last"}},
+    {"id":"bl","type":"blend","x":500,"y":0,"inputs":{"a":"mix","b":"n1"},"params":{"mode":"screen"}},
+    {"id":"slow","type":"time","x":750,"y":0,"inputs":{"in":"bl"},"params":{"time":"t*dur/2","loop":1,"debut":"last","duration":2}},
+    {"id":"seq","type":"sequence","x":1000,"y":75,"inputs":{"s1":"n2","s2":"slow","s3":"mix"},"params":{"modes":{"s3":"screen"}}},
+    {"id":"out","type":"output","x":1250,"y":75,"inputs":{"in":"seq"},"params":{"width":64,"height":48,"fps":24,"duration":6,"oversample":true}}
+  ]
+}

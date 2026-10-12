@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fragtime import test</title>
+<link rel="stylesheet" href="style.css">
+<style> article { max-width: 1100px; } td.num { text-align: right; font-family: var(--mono); } tr.bad td:first-child { color: var(--err); } tr.ok td:first-child { color: #7fd97f; } canvas { max-width: 256px; } </style>
+</head>
+<body>
+<header><h1><a href="./">Fragtime</a> <small>import test: the imported patch vs the script's shader</small></h1></header>
+<article>
+<p>Imports every QTS script as a patch, compiles both to GLSL and compares the pictures on this GPU at three moments.
+<button id="go" class="primary">Run</button> <span id="status"></span></p>
+<table id="table"><thead><tr><th>script</th><th>size</th><th>nodes</th><th>GLSL old/new</th><th>% differ</th><th>max</th><th>&gt; 2</th><th>note</th></tr></thead><tbody></tbody></table>
+<p id="summary"></p>
+<div id="pics"></div>
+</article>
+<script type="module" src="importtest.js"></script>
+</body>
+</html>
