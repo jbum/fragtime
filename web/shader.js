@@ -59,6 +59,48 @@ class QTSShaderPlayer {
     if (duration > 0) this.duration = duration;
     this.frameNbr = 0;
   }
+  // sets an int uniform the shader declares itself (the editor's thumbnails pick a node so)
+  setInt(name, v) {
+    const gl = this.gl;
+    if (!this.program) return;
+    if (!this._ints || this._intsProg !== this.program) { this._ints = {}; this._intsProg = this.program; }
+    if (!(name in this._ints)) this._ints[name] = gl.getUniformLocation(this.program, name);
+    if (!this._ints[name]) return;
+    gl.useProgram(this.program);
+    gl.uniform1i(this._ints[name], v);
+  }
+  setVec2(name, a, b) {
+    const gl = this.gl;
+    if (!this.program) return;
+    if (!this._ints || this._intsProg !== this.program) { this._ints = {}; this._intsProg = this.program; }
+    if (!(name in this._ints)) this._ints[name] = gl.getUniformLocation(this.program, name);
+    if (!this._ints[name]) return;
+    gl.useProgram(this.program);
+    gl.uniform2f(this._ints[name], a, b);
+  }
+  setInts(name, values) {
+    const gl = this.gl;
+    if (!this.program) return;
+    if (!this._ints || this._intsProg !== this.program) { this._ints = {}; this._intsProg = this.program; }
+    if (!(name in this._ints)) this._ints[name] = gl.getUniformLocation(this.program, name);
+    if (!this._ints[name]) return;
+    gl.useProgram(this.program);
+    gl.uniform1iv(this._ints[name], values);
+  }
+  // draws into the rectangle x, y, w, h of the canvas (GL coordinates, from the bottom left) as if
+  // it were the whole picture; the shader subtracts ft_origin (the editor's thumbnail atlas)
+  drawRegion(time, x, y, w, h) {
+    const gl = this.gl;
+    if (!this.program) return;
+    this.time = time;
+    this.setVec2("ft_origin", x, y);
+    gl.viewport(x, y, w, h);
+    gl.useProgram(this.program);
+    gl.uniform3f(this.u.res, w, h, 1);
+    gl.uniform1f(this.u.time, this.time);
+    gl.uniform1i(this.u.frame, this.frameNbr++);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
   setSize(w, h) { if (this.canvas.width !== w || this.canvas.height !== h) { this.canvas.width = w; this.canvas.height = h; } }
   draw(time) {
     const gl = this.gl, c = this.canvas;
@@ -107,7 +149,7 @@ export const ShaderPlayer = new Function(PLAYER_SRC + "\nreturn QTSShaderPlayer;
 // letterboxed canvas, keys to pause and save a frame.
 export function standaloneHTML({ source, title, images, duration, width, height }) {
   const esc = (s) => s.replace(/<\/script/gi, "<\\/script");
-  const name = (title || "qts shader").replace(/[<>&]/g, "");
+  const name = (title || "fragtime shader").replace(/[<>&]/g, "");
   return `<!doctype html>
 <html lang="en">
 <head>

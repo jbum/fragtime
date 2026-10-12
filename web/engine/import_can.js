@@ -254,28 +254,50 @@ function foldSequences(patch) {
   }
 }
 
-// Columns by distance from the Output (inputs to the left), rows in the order the Output
-// reaches them.
-export function layout(patch, colW = 250, rowH = 150) {
+// Columns by distance from the Output (inputs to the left); rows as a tidy tree: the nodes
+// reached first from the Output take the next free row, and a node sits beside the middle of
+// its inputs, so each slice of a sequence keeps its inputs around it.
+export function layout(patch, colW = 250, rowH = 130) {
   const byId = G.nodeById(patch), out = G.outputNode(patch);
-  const rank = new Map(), order = [];
-  const visit = (n, r) => {
-    if ((rank.get(n.id) ?? -1) >= r && order.includes(n)) return;
-    rank.set(n.id, Math.max(rank.get(n.id) ?? 0, r));
-    if (!order.includes(n)) order.push(n);
-    for (const p of G.portsOf(n)) { const m = byId.get(n.inputs[p]); if (m) visit(m, r + 1); }
+  const rank = new Map();
+  const ranked = (n, r, stack) => {
+    if ((rank.get(n.id) ?? -1) >= r || stack.has(n.id)) return;
+    rank.set(n.id, r);
+    stack.add(n.id);
+    for (const p of G.portsOf(n)) { const m = byId.get(n.inputs[p]); if (m) ranked(m, r + 1, stack); }
+    stack.delete(n.id);
   };
-  if (out) visit(out, 0);
-  for (const n of patch.nodes) if (!rank.has(n.id)) { rank.set(n.id, 1); order.push(n); }
+  if (out) ranked(out, 0, new Set());
+  for (const n of patch.nodes) if (!rank.has(n.id)) rank.set(n.id, 1);
   const maxRank = Math.max(...rank.values());
-  const rows = new Map();
-  for (const n of order) {
-    const r = rank.get(n.id), i = rows.get(r) || 0;
-    rows.set(r, i + 1);
-    n.x = (maxRank - r) * colW;
-    n.y = i * rowH;
+  const ys = new Map();
+  let cursor = 0;
+  const place = (n) => {
+    if (ys.has(n.id)) return ys.get(n.id);
+    ys.set(n.id, null);        // in progress
+    const kids = [];
+    for (const p of G.portsOf(n)) {
+      const m = byId.get(n.inputs[p]);
+      if (m && !ys.has(m.id)) { const y = place(m); if (y !== null) kids.push(y); }
+    }
+    let y;
+    if (kids.length) y = (Math.min(...kids) + Math.max(...kids)) / 2;
+    else { y = cursor; cursor += rowH; }
+    ys.set(n.id, y);
+    return y;
+  };
+  if (out) place(out);
+  for (const n of patch.nodes) if (!ys.has(n.id) || ys.get(n.id) === null) { ys.set(n.id, cursor); cursor += rowH; }
+  for (const n of patch.nodes) { n.x = (maxRank - rank.get(n.id)) * colW; n.y = Math.round(ys.get(n.id)); }
+  // no overlaps within a column (tall sequence nodes push the rest down)
+  const cols = new Map();
+  for (const n of patch.nodes) { if (!cols.has(n.x)) cols.set(n.x, []); cols.get(n.x).push(n); }
+  for (const list of cols.values()) {
+    list.sort((a, b) => a.y - b.y);
+    let bottom = -Infinity;
+    for (const n of list) {
+      if (n.y < bottom + 20) n.y = Math.round(bottom + 20);
+      bottom = n.y + Math.max(110, 32 + G.portsOf(n).length * 16);
+    }
   }
-  // centre each column on the tallest
-  const tallest = Math.max(...rows.values());
-  for (const n of patch.nodes) n.y += (tallest - rows.get(rank.get(n.id))) * rowH / 2;
 }

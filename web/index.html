@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fragtime – Pixel Magic in the browser</title>
-<meta name="description" content="QTS: Jim Bumgardner's Pixel Magic / QuickTime Synthesizer (1995–2003) running in the browser. Write a formula per pixel, add time, render stills and movies.">
-<meta property="og:title" content="Fragtime – Pixel Magic in the browser">
-<meta property="og:description" content="A formula for every pixel, plus time: stills and movies, rendered in your browser.">
+<title>Fragtime</title>
+<meta name="description" content="Fragtime: pictures and movies from a formula for every pixel, plus time. Wire formulas together as nodes; they compile to one fragment shader and play live on your GPU.">
+<meta property="og:title" content="Fragtime – fragment shaders over time">
+<meta property="og:description" content="A formula for every pixel, plus time: wire them together as nodes, watch them play live on your GPU, render movies.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://fragtime.jbum.com/">
 <meta property="og:image" content="https://fragtime.jbum.com/assets/card.png?v=1">
@@ -14,69 +14,77 @@
 <link rel="icon" href="assets/icon.png">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="app">
 <header>
-  <h1><a href="./">QTS</a> <small>Pixel Magic in the browser</small></h1>
+  <h1><a href="./">Fragtime</a></h1>
   <nav>
     <button id="gallery-open">Examples</button>
     <button id="new">New</button>
-    <button id="open" title="a .can script from your computer">Open…</button>
-    <button id="save" title="download the script">Save</button>
-    <button id="images" title="add image files the script refers to with image=&quot;…&quot;">Images…</button>
-    <button id="help" title="the script language, every property and function">Language</button>
-    <button id="tips" title="what everything here does" aria-label="help">?</button>
+    <button id="open" title="a .fragtime patch, or a QTS .can script (imported)">Open…</button>
+    <button id="save" title="download the patch (.fragtime)">Save</button>
+    <button id="images" title="add image files for Image nodes">Images…</button>
+    <span class="sep"></span>
+    <button id="undo" title="undo (⌘Z)" aria-label="undo">↶</button>
+    <button id="redo" title="redo (⇧⌘Z)" aria-label="redo">↷</button>
+    <span class="sep"></span>
+    <button id="help" title="the expression language, every variable and function">Language</button>
+    <button id="tips" title="how the editor works" aria-label="help">?</button>
     <a class="about" href="about.html">About</a>
   </nav>
 </header>
 
-<main>
-  <section class="editor">
-    <div class="row">
-      <input id="name" value="untitled.can" spellcheck="false" aria-label="script name">
-      <button id="render" class="primary" title="⌘/Ctrl + Enter">Render frame</button>
+<main class="ft">
+  <section id="deskPane">
+    <div class="paletteBar">
+      <span class="tabs" role="tablist">
+        <button id="tabPatch" class="on" role="tab">Patch</button>
+        <button id="tabSource" role="tab" title="the patch as text (JSON)">Source</button>
+      </span>
+      <span id="palette"></span>
     </div>
-    <textarea id="editor" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off"></textarea>
-    <div id="log" aria-live="polite"></div>
+    <div id="deskWrap">
+      <div class="deskTools">
+        <button id="zoomOut" title="zoom out">−</button>
+        <button id="zoomFit" title="fit the patch">Fit</button>
+        <button id="zoomIn" title="zoom in">+</button>
+      </div>
+    </div>
+    <div id="sourcePane" hidden>
+      <textarea id="sourceText" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off"></textarea>
+      <div class="row"><button id="applySource" class="primary">Apply</button><span id="sourceErr" class="dim"></span></div>
+    </div>
   </section>
 
-  <section class="view">
-    <div class="tabs" role="tablist">
-      <button id="tabShader" class="on" role="tab" title="the script compiled to a GLSL shader, playing live on the GPU">Live shader</button>
-      <button id="tabFrame" role="tab" title="one frame from the original renderer (WebAssembly, every core): exact, and for devices without a usable GPU">Frame</button>
-    </div>
-    <div class="canvasWrap"><canvas id="preview" width="256" height="256"></canvas><canvas id="glview" width="256" height="256" hidden></canvas></div>
+  <section id="outPane">
+    <div class="canvasWrap"><canvas id="glview" width="320" height="240"></canvas></div>
     <div class="timeRow">
       <button id="shaderPlay" class="icon" title="pause / play (or click the picture)" aria-label="pause">❚❚</button>
       <input type="range" id="time" min="0" max="1" step="0.0005" value="0" aria-label="time">
       <span id="timeText"></span>
     </div>
-    <div class="row controls">
-      <label>size <input id="width" type="number" min="1" max="4096" placeholder="w"> × <input id="height" type="number" min="1" max="4096" placeholder="h">
-        <button id="sizeReset" title="back to the script's fw/fh">↺</button></label>
-    </div>
-    <div class="row" id="shaderButtons" hidden>
-      <label title="2×2 samples per pixel where the script asks; off is four times faster"><input type="checkbox" id="shaderOversample" checked> oversample</label>
-      <button id="saveShaderHtml" title="a page that plays the loop, with the shader and images inside">Save shader (HTML)</button>
-      <button id="saveShaderGlsl" title="the fragment shader alone, in Shadertoy's dialect">Save GLSL</button>
-      <span id="shaderFps" class="dim"></span>
-    </div>
     <div class="row">
-      <button id="savePng">Save frame (PNG)</button>
+      <button id="savePng" title="the picture now, as a PNG">Save frame</button>
       <button id="movie" class="primary">Render movie…</button>
       <button id="movieCancel" hidden>Cancel</button>
+      <button id="saveShaderHtml" title="a page that plays the loop by itself, images included">Save shader</button>
+      <button id="saveShaderGlsl" title="the fragment shader alone, in Shadertoy's dialect">GLSL</button>
+      <label class="dim" title="2×2 samples per pixel where the patch asks; off is four times faster"><input type="checkbox" id="shaderOversample" checked> 2×2</label>
     </div>
     <div class="statusRow"><span id="status"></span><progress id="progress" max="1" value="0" hidden></progress></div>
   </section>
+
+  <aside id="inspector"></aside>
+  <div id="log" aria-live="polite"></div>
 </main>
 
 <div id="galleryPanel" hidden>
   <div class="galleryHead">
-    <h2>Examples from the QTS archive (2001–2003)</h2>
+    <h2>Examples, from the QTS archive (2001–2003)</h2>
     <button id="galleryClose">Close</button>
   </div>
   <p class="featured">
     <a href="about.html#etude">Noise Etude</a> (2001, 131 s) is the long piece: watch it on the About page, or open
-    <a href="?x=noiseetude.can">noiseetude.can</a> here and render it yourself.
+    <a href="?x=noiseetude">its patch</a> here.
   </p>
   <div id="gallery" class="grid"></div>
 </div>
@@ -85,12 +93,7 @@
   <h2>Render movie</h2>
   <p id="movieInfo"></p>
   <p>
-    <label>Render with
-      <select id="movieEngine">
-        <option value="gpu">the shader (GPU: fast)</option>
-        <option value="cpu">the original renderer (CPU: exact)</option>
-      </select>
-    </label>
+    <label>Size <input id="movieW" type="number" min="2" max="4096"> × <input id="movieH" type="number" min="2" max="4096"></label>
     <label>Format
       <select id="movieFormat">
         <option value="mp4">MP4 (H.264)</option>
@@ -103,31 +106,34 @@
     <label><input type="radio" name="movieRange" id="movieSome"> frames
       <input id="movieFirst" type="number" min="1" value="1"> to <input id="movieLast" type="number" min="1" value="1"></label>
   </p>
-  <p class="hint" id="movieHint"></p>
+  <p class="hint">The shader draws each frame on the GPU; they show as they are made. The file downloads when it is done.</p>
   <p class="buttons"><button id="movieClose">Cancel</button> <button id="movieGo" class="primary">Render</button></p>
 </dialog>
 
 <dialog id="tipsDialog">
   <h2>Tips</h2>
   <ul class="tips">
-    <li><b>Live shader</b> compiles the script to GLSL and plays it on the GPU, looping; edits show as you type.
-      <b>Frame</b> renders one frame with the original engine on every core: exact, and the one for a weak GPU.</li>
-    <li>Click the picture to pause and play. The slider scrubs; in the shader view it pauses.
-      <kbd>⌘</kbd>/<kbd>Ctrl</kbd>+<kbd>Enter</kbd> runs, <kbd>Tab</kbd> indents.</li>
-    <li><b>size</b> is the picture, frame and movie size; empty, or ↺, means the script's own <code>fw</code>×<code>fh</code>.</li>
-    <li><b>oversample</b> keeps the script's 2×2 supersampling; off is four times faster.</li>
-    <li><b>Render movie…</b> makes an MP4 (H.264) or a zip of PNG frames, drawn by the shader unless you pick the
-      original renderer. <b>Save frame</b> saves the current picture.</li>
-    <li><b>Save shader (HTML)</b> is a page that plays the loop by itself, images included.
-      <b>Save GLSL</b> is the fragment shader in Shadertoy's dialect: paste it there, with the images in its channels.</li>
-    <li><b>Images…</b> adds image files a script refers to with <code>image="name"</code>; the examples' images are here already.</li>
-    <li>The script stays in this browser between visits; <b>Save</b> downloads it. The shader is 32-bit float, so
-      very deep fractal zooms need the Frame view.</li>
+    <li>A patch is <b>nodes wired into the Output</b>. Each node is a picture: a formula of <code>x</code>, <code>y</code>
+      and <code>t</code>. It all compiles to one fragment shader and plays live, looping.</li>
+    <li><b>Wire</b> by dragging from a node's right edge onto another node (or onto one of its inputs). The receiving
+      node reads the wire as <code>$name</code>: <code>$a</code> is the input here, <code>$a[x2,y2]</code> somewhere
+      else, <code>$a[t2]</code> at another time.</li>
+    <li><b>Add</b> nodes from the bar above the desk. With a node selected, Warp, Mask, Displace, Blend and Time take
+      it as their input.</li>
+    <li><b>Sequence</b> paints its inputs in order, each while it is alive, blended onto what is below:
+      <b>debut</b> and <b>duration</b> (in a node's Lifetime) say when; <code>last</code> follows the previous input.</li>
+    <li><b>Desk</b>: drag to select, <kbd>Delete</kbd> removes, <kbd>⌘Z</kbd> undoes. Pan with the wheel or by dragging
+      with <kbd>Space</kbd> or <kbd>Option</kbd> held; zoom with a pinch or <kbd>⌘</kbd>-wheel. On a touch screen drag
+      the desk to pan, pinch to zoom, press and hold to select.</li>
+    <li>Click the picture to pause; the slider scrubs. <b>Render movie…</b> makes an MP4 or PNG frames;
+      <b>Save shader</b> is a page that plays the loop by itself; <b>GLSL</b> pastes into Shadertoy.</li>
+    <li><b>Open…</b> reads a <code>.fragtime</code> patch or imports a QTS <code>.can</code> script. The patch stays in
+      this browser between visits; <b>Save</b> downloads it.</li>
   </ul>
   <p class="buttons"><button id="tipsClose" class="primary">OK</button></p>
 </dialog>
 
-<input type="file" id="openFile" accept=".can,.txt,text/plain" hidden>
+<input type="file" id="openFile" accept=".fragtime,.json,.can,.txt" hidden>
 <input type="file" id="imageFiles" accept="image/*" multiple hidden>
 
 <script type="module" src="app.js"></script>

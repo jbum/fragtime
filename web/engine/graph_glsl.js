@@ -26,6 +26,7 @@ const PROPS = [["left", "left"], ["top", "top"], ["width", "width"], ["height", 
   ["endWidth", "endwidth"]];
 
 const PIXARGS = "float px, float py, float fw, float fh";
+export const FT_MAXTILES = 256;
 
 function timeNumber(v) {
   if (v === undefined || v === null || v === "" || v === "last") return null;
@@ -393,7 +394,13 @@ ${samp}
 #define QTS_DURATION ${f(D)}
 #define QTS_FPS ${f(fps)}
 #define QTS_OVERSAMPLE 1      // 0 renders four times faster, without the 2x2 supersampling
-${this.opts.preview ? "uniform int ft_node;      // the node shown (thumbnails); -1: the Output\n" : ""}
+${this.opts.preview ? `// the thumbnail atlas: tiles of ft_tile pixels, ft_cols across from the bottom left; tile i shows
+// node ft_nodes[i] (-1: the Output, -2: nothing). One draw makes every thumbnail.
+#define FT_MAXTILES ${FT_MAXTILES}
+uniform int ft_nodes[FT_MAXTILES];
+uniform vec2 ft_tile;
+uniform int ft_cols;
+` : ""}
 struct Ctx { float x, y, t, gt, w, h, n, gn, fw, fh, p0, q0, px, py, pw, ph, cx, cy, left, top, zoom, dur, minv, maxv, gtime, start; int recur; };
 struct Clk { float gtime, start, dur; };
 
@@ -404,7 +411,14 @@ ${libraryText(this.used)}
 
 ${bodies.join("\n")}
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-  float fw = iResolution.x, fh = iResolution.y;
+${this.opts.preview ? `  ivec2 tile = ivec2(floor(fragCoord / ft_tile));
+  int ti = tile.y * ft_cols + tile.x;
+  int ft_node = ti < FT_MAXTILES && tile.x < ft_cols ? ft_nodes[ti] : -2;
+  if (ft_node == -2) { fragColor = vec4(0.0, 0.0, 0.0, 1.0); return; }
+  fragCoord -= vec2(tile) * ft_tile;
+  float fw = ft_tile.x, fh = ft_tile.y;
+` : `  float fw = iResolution.x, fh = iResolution.y;
+`}
   float px = floor(fragCoord.x), py = floor(fh - fragCoord.y);
   float gtime = mod(iTime, QTS_DURATION);
   vec3 col = vec3(0.0);

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Assemble the fragtime.jbum.com site in build/web.
 
-Copies web/, the wasm build (build/wasm-web, made by build_wasm.sh) and the examples,
+Copies web/ and the examples, imports every example script as a patch (name.fragtime),
 renders a thumbnail of every example with the native qts (make first), writes
-examples/index.json, and puts the Noise Etude movie and the social card in assets/.
+examples/index.json and images.json, and puts the Noise Etude movie and the social card in
+assets/. The site renders on the GPU only: the wasm renderer isn't part of it any more.
 """
 import json, os, re, shutil, subprocess, sys
 from PIL import Image, ImageDraw, ImageFont
@@ -63,14 +64,9 @@ def description(path):
 def main():
     if not os.path.exists(QTS):
         sys.exit("build the native qts first (make)")
-    wasm = os.path.join(ROOT, "build", "wasm-web")
-    if not os.path.exists(os.path.join(wasm, "qts.wasm")):
-        sys.exit("build the wasm first (build/build_wasm.sh web)")
-
     shutil.rmtree(OUT, ignore_errors=True)
-    shutil.copytree(os.path.join(ROOT, "web"), OUT)
-    for f in ("qts.js", "qts.wasm"):
-        shutil.copy(os.path.join(wasm, f), OUT)
+    # the wasm renderer's pages stay in the repo for the inherited tests, not on the site
+    shutil.copytree(os.path.join(ROOT, "web"), OUT, ignore=shutil.ignore_patterns("worker.js", "bench.html", "bench.js"))
 
     exdir = os.path.join(OUT, "examples")
     thumbs = os.path.join(exdir, "thumbs")
@@ -104,8 +100,13 @@ def main():
         entry.update(meta)
         entries.append(entry)
         print("example", name, f"{w}x{h}", meta["frames"], "frames")
+    run("node", os.path.join(ROOT, "build", "import_examples.js"), exdir)
+    for e in entries:
+        e["patch"] = e["file"][:-4] + ".fragtime"
     with open(os.path.join(exdir, "index.json"), "w") as f:
         json.dump(entries, f, indent=1)
+    with open(os.path.join(exdir, "images.json"), "w") as f:
+        json.dump(sorted(f2 for f2 in os.listdir(exdir) if f2.endswith(".png")), f)
 
     assets = os.path.join(OUT, "assets")
     os.makedirs(assets, exist_ok=True)
