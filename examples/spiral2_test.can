@@ -1,0 +1,16 @@
+<seq id=main 
+ fw=320 fh=240
+ wrap=true oversample=true
+ // moviecodec='raw ' 
+ // dither=true
+ moviefile="spiral5.mov"
+ seamless=true
+ duration=4> 
+// in this case, duration determined by sub-sequences
+  <seq id=spirala max=pi
+    rgb="log(d)*3-a-pi/2-(t*pi*4),log(d)*3+a-(t*pi*2),log(d)*3+a+pi/2-(t*pi*8)" />
+   <seq id=spiralb debut=0  min=-1 max=1
+       rgb="sin((log(d)*3-a-(t*pi*4))*2),sin((log(d)*3+a-(t*pi*2))*2+pi),sin((log(d)*3+a-(t*pi*8))*2)" />
+   <seq id=dissolve triple="terp($spirala,$spiralb)" />
+
+</seq>

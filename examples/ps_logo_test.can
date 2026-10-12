@@ -1,0 +1,5 @@
+// Synthetic Logo
+<seq oversample=true>
+ <seq id=ba center mono="abs(dist(x+noise(x*10,y*10,t)*.03*100*(1-t),y*2+noise(x*10,y*10,t)*.03*100*(1-t))-.4) < .045+(1-t)*.1 || d < .085*t" />
+ <seq id=logo mono="$ba{d,a-pi/4.55}" />
+</seq>

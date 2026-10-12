@@ -1,0 +1,5 @@
+<seq duration=3 oversample=true framerate=24>
+<seq id=a wrap=true min=-1 max=1 pix="sin(log(d)*4+a+t*pi)" />
+<seq id=b image="pslogo.bmp" pix="sample(x,y)" />
+<seq id=c pix="terp($a,$b{d,a+log(d)*4*(1-ease(t))},ease(t))" />
+</seq>

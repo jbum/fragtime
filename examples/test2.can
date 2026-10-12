@@ -1,0 +1,4 @@
+<seq>
+ <seq debut=0 duration=1 mono="x" />
+ <seq debut=next duration=1 mono="y" />
+</seq>

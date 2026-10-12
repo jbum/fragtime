@@ -1,0 +1,28 @@
+// Figure out why oversampling isn't working.
+<seq duration=31 fw=400 fh=300 oversample=true framerate=24>
+  <seq duration=1 debut=0>
+    <seq id=a center=true min=-1 max=1 width="4" endwidth="4/2" mono="fnoise(x,y,t)" />
+    <seq id=b center=true min=-1 max=1 width="4*2" endwidth="4" mono="fnoise(x,y,t-1)" />
+    <seq hsv=".57,terp($a,$b),1-terp($a,$b)" />
+  </seq>
+  <seq duration=2 debut=1>
+    <seq id=c center=true min=-1 max=1 width="4" endwidth="4/4" mono="fnoise(x,y,t*2)" />
+    <seq id=d center=true min=-1 max=1 width="4*4" endwidth="4" mono="fnoise(x,y,t*2-2)" />
+    <seq hsv=".57,terp($c,$d),1-terp($c,$d)" />
+  </seq>
+  <seq duration=4 debut=3>
+    <seq id=e center=true min=-1 max=1 width="4" endwidth="4/8" mono="fnoise(x,y,t*4)" />
+    <seq id=f center=true min=-1 max=1 width="4*8" endwidth="4" mono="fnoise(x,y,t*4-4)" />
+    <seq hsv=".57,terp($e,$f),1-terp($e,$f)" />
+  </seq>
+  <seq duration=8 debut=7>
+    <seq id=g center=true min=-1 max=1 width="4" endwidth="4/16" mono="fnoise(x,y,t*8)" />
+    <seq id=h center=true min=-1 max=1 width="4*16" endwidth="4" mono="fnoise(x,y,t*8-8)" />
+    <seq hsv=".57,terp($g,$h),1-terp($g,$h)" />
+  </seq>
+  <seq duration=16 debut=15>
+    <seq id=i center=true min=-1 max=1 width="4" endwidth="4/32" mono="fnoise(x,y,t*8)" />
+    <seq id=j center=true min=-1 max=1 width="4*32" endwidth="4" mono="fnoise(x,y,t*8-8)" />
+    <seq hsv=".57,terp($i,$j),1-terp($i,$j)" />
+  </seq>
+</seq>

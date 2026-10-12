@@ -1,0 +1,24 @@
+<seq oversample=true >
+  <seq id=a min=-1 mono="terp(sin(y*pi+pi/2),sin(a))" />
+  <seq id=b mono="$a{terp(sin(d*pi+pi/2),1),a+log(d)*4}" />
+  // <seq id=b pix="$a{d,a+log(d)*4}" />
+  // <seq id=c wrap=true min=-1 mono="sin(log(d)*4+a)" />
+  // <seq mono="terp(terp($a,$b,x>.25),$c,x>.5)" />
+ 
+  // Angle...Perfect match
+  // <seq id=a max="pi2" mono="a" />
+  // <seq id=b pix="$a{d,a+log(d)*4}" />
+  // <seq id=c wrap=true max="2*pi" mono="log(d)*4+a" />
+
+  // Another equiv (sine)
+  // <seq id=a min=-1 mono="sin(a)" />
+  // <seq id=b pix="$a{d,a+log(d)*4}" />
+  // <seq id=c wrap=true min=-1 mono="sin(log(d)*4+a)" />
+  // <seq mono="terp(terp($a,$b,x>.25),$c,x>.5)" />
+
+  // Cool looking spiral
+  // <seq id=a min=-1 mono="sin(y*pi+pi/2)" />
+  // <seq id=b mono="$a{sin(d*pi+pi/2),a+log(d)*4}" />
+
+
+</seq>

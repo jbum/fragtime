@@ -1,0 +1,6 @@
+// Continous cloud cycle
+<seq duration=4 height=1 fw=512 fh=256   
+ oversample=true framerate=24>
+ <seq id=a left="2+t*2" width=4 height=2 min=-1 mono="fnoise(x*2,y*16,t)" />
+ <seq hsv=".55+bias(cos(y*pi2*2)*.5+1,.4)*.2,bias($a,.3+sin(t*pi2)*.5),$a" />
+</seq>

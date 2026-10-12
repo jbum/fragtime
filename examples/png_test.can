@@ -1,0 +1,11 @@
+// Mona Lisa Zoom (original image is 605/790)
+<seq fw=320 fh=240 debut=0 duration=8 framerate=24
+ seamless=true oversample=true
+ moviefile="mona.mov"
+>
+
+	<seq id=a tile=true width=1 height=1 
+     image="test.png"
+      pix="samptile(x,y)" />
+
+</seq>

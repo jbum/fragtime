@@ -1,0 +1,57 @@
+<seq id=main 
+ fw=320 fh=240
+ wrap=true oversample=true
+ // moviecodec='raw ' 
+ // dither=true
+ moviefile="spiral5.mov"
+ seamless=true> 
+// in this case, duration determined by sub-sequences
+  <seq duration=4>
+    <seq id=spirala max=pi
+	     rgb="log(d)*3-a-pi/2-(t*pi*4),log(d)*3+a-(t*pi*2),log(d)*3+a+pi/2-(t*pi*8)" />
+    <seq id=spiralb debut=0  min=-1 max=1
+         rgb="sin((log(d)*3-a-(t*pi*4))*2),sin((log(d)*3+a-(t*pi*2))*2+pi),sin((log(d)*3+a-(t*pi*8))*2)" />
+    <seq height=1 id=dissolve triple="terp($spirala,$spiralb)" />
+  </seq>
+
+  <seq debut=4 duration=4>
+    <seq id=spirala1 debut=0  min=-1 max=1
+         rgb="sin((log(d)*3-a-(t*pi*4))*2),sin((log(d)*3+a-(t*pi*8))*2+pi),sin((log(d)*3+a-(t*pi*2))*2)" />
+    <seq id=spiralb1 debut=0  min=-1 max=1
+    rgb="sin(log(d)*3-a-pi/2-(t*pi*4)),sin(log(d)*3+a-(t*pi*8)),sin(log(d)*3+a+pi/2-(t*pi*2))" />
+    <seq height=1 id=dissolveb debut=0
+	     triple="terp($spirala1,$spiralb1)" />
+  </seq>
+  <seq debut=8 duration=4>
+    <seq id=spiralc debut=0  min=-1 max=1
+    rgb="sin(log(d)*3-a-pi/2-(t*pi*4)),sin(log(d)*3+a-(t*pi*2)),sin(log(d)*3+a+pi/2-(t*pi*8))" />
+    <seq id=spirald debut=0  min=-1 max=1
+    rgb="sin(log(d)*3-a-pi/2-(t*pi*4))*sin(a*3),sin(log(d)*3+a-(t*pi*2))*cos(a*3),sin(log(d)*3+a+pi/2-(t*pi*8))*sin(a*3)" />
+    <seq height=1 id=dissolveb debut=0
+	     triple="terp($spiralc,$spirald)" />
+  </seq>
+  <seq debut=12 duration=4>
+    <seq id=spirale  debut=0 min=-1 max=1
+    rgb="sin(log(d)*3-a-pi/2-(t*pi*4))*sin(a*3),sin(log(d)*3+a-(t*pi*2))*cos(a*3),sin(log(d)*3+a+pi/2-(t*pi*8))*sin(a*3)" />
+    <seq id=spiralf  debut=0 min=-1 max=1
+    rgb="sin(log(d)*6-a-pi/2-(t*pi*4))*sin(a*6),sin(log(d)*6+a-(t*pi*2))*cos(a*6),sin(log(d)*6+a+pi/2-(t*pi*8))*sin(a*6)" />
+    <seq height=1 id=dissolvec debut=0
+	     triple="terp($spirale,$spiralf)" />
+  </seq>
+  <seq debut=16 duration=4>
+    <seq id=spiralg debut=0  min=-1 max=1
+    rgb="sin(log(d)*6-a-pi/2-(t*pi*4))*sin(a*6),sin(log(d)*6+a-(t*pi*2))*cos(a*6),sin(log(d)*6+a+pi/2-(t*pi*8))*sin(a*6)" />
+    <seq id=spiralh debut=0  min=-1 max=1
+         rgb="sin((log(d)*3-a-(t*pi*4))*2),sin((log(d)*3+a-(t*pi*4))*2+pi),sin((log(d)*3+a-(t*pi*4))*2)" />
+    <seq height=1 debut=0
+	     triple="terp($spiralg,$spiralh)" />
+  </seq>  
+  <seq debut=20 duration=4>
+    <seq id=spirali debut=0  min=-1 max=1
+         rgb="sin((log(d)*3-a-(t*pi*4))*2),sin((log(d)*3+a-(t*pi*2))*2+pi),sin((log(d)*3+a-(t*pi*8))*2)" />
+    <seq id=spiralj debut=0  max=pi
+	    rgb="log(d)*3-a-pi/2-(t*pi*4),log(d)*3+a-(t*pi*2),log(d)*3+a+pi/2-(t*pi*8)" />
+    <seq height=1 debut=0
+     triple="terp($spirali,$spiralj)" />
+  </seq>
+</seq>

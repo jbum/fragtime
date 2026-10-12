@@ -1,0 +1,5 @@
+<seq duration=2 oversample framerate=16 movietype=bmpframes >
+<seq center id=a width=8 height=1 min=-1 mono="max(fnoise(x,y),fnoise(x+11.5,y+.5))" />
+<seq center id=b width=8 height=1 min=-1 mono="max(fnoise(x,y-1),fnoise(x+11.5,y-.5))" />
+<seq id=c max=2 mono="terp($a,$b,y)" />
+</seq>

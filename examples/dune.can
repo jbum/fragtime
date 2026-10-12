@@ -1,0 +1,23 @@
+<seq oversample=true duration=2 framerate=24 fw=512 fh=227 >
+  <seq id=a min=-1 width=6 mono="noise(x,y,t*4)+fnoise(x,y,t*4)*.2" />
+  <seq id=dk min=-1 width=6 mono="noise(x-.2,y-.2,t*4)" />
+  <seq id=bump mono="$a*(min(0,($dk-$a))+1)" />
+  <seq hsv="0.2,1-$bump,$bump" />
+ 
+  // Angle...Perfect match
+  // <seq id=a max="pi2" mono="a" />
+  // <seq id=b pix="$a{d,a+log(d)*4}" />
+  // <seq id=c wrap=true max="2*pi" mono="log(d)*4+a" />
+
+  // Another equiv (sine)
+  // <seq id=a min=-1 mono="sin(a)" />
+  // <seq id=b pix="$a{d,a+log(d)*4}" />
+  // <seq id=c wrap=true min=-1 mono="sin(log(d)*4+a)" />
+  // <seq mono="terp(terp($a,$b,x>.25),$c,x>.5)" />
+
+  // Cool looking spiral
+  // <seq id=a min=-1 mono="sin(y*pi+pi/2)" />
+  // <seq id=b mono="$a{sin(d*pi+pi/2),a+log(d)*4}" />
+
+
+</seq>

@@ -1,0 +1,10 @@
+// Compression method 1: Elapsed 55.67, 512k
+// Soren 128 came out to 512k
+// Soren 150 (12 key) came out to 599
+<seq fw=320 fh=240 duration=4 framerate=12 // dur was 4
+ oversample=false moviefile="fib2.mov"
+>
+   <seq id=a debut=0 min=-1 max=1 
+    hsv="sin(log(d)*10+a+t*2*pi)+cos(a*10),sin(log(d)*10+a+t*2*pi)*.25,sin(log(d)*10+a+t*2*pi)*sin(a*10)*.5" 
+   />
+</seq>

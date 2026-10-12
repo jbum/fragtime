@@ -1,0 +1,8 @@
+<seq fw=320 fh=240 oversample=true framerate=12 >
+  <seq duration=6>
+    <seq id=en min=-1 mono="fnoise(x+t*3,y,t*6)*.1" />
+    <seq debut=0 duration=1 height=1 tile=true image="endcredit.bmp" pix="terp(0,sample(x+$en-.5,y+$en-.5),ease(t))" />
+    <seq debut=last duration=3 height=1 tile=true image="endcredit.bmp" pix="sample(x+$en-.5,y+$en-.5)" />
+    <seq debut=last duration=2 height=1 tile=true image="endcredit.bmp" pix="terp(sample(x+$en-.5,y+$en-.5),0,ease(t))" />
+  </seq>
+</seq>

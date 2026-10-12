@@ -1,0 +1,5 @@
+// Figure out why oversampling isn't working.
+<seq duration=4 oversample=false pw=512 ph=128 >
+  <seq width=256 id=a min=0 max=255 
+       wrap=true pix="rgb(((x xor y)%11)*255/11,((x xor y)%7)*7/255,((x xor y)%17)*255/17)" />
+</seq>

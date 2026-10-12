@@ -1,0 +1,10 @@
+obj/
+qts
+build/web/
+build/wasm-*/
+*.dSYM
+.DS_Store
+node_modules/
+scratchpad/
+build/deploy.dest
+CLAUDE.local.md

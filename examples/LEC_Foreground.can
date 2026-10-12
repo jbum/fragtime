@@ -1,0 +1,4 @@
+<seq fw=600 fh=400 duration=4 oversample=true>
+<seq id=a center width=1 endwidth=1024 min=0 max=1 mono="fbmt(x,y,0,1,2,1)" />
+<seq mono="bias($a,.85)" />
+</seq>

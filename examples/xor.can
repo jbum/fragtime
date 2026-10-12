@@ -1,0 +1,6 @@
+<seq duration=4 framerate=8>
+<seq id=r max="1+int(t*32)" width=32 mono="(x xor y) mod (maxv+1)" />
+<seq id=g max="1+(int(t*32)+10) mod 32" width=32 mono="(x xor y) mod (maxv+1)" />
+<seq id=b max="1+(int(t*32)+20) mod 32" width=32 mono="(x xor y) mod (maxv+1)" />
+<seq rgb="$r,$g,$b" />
+</seq>

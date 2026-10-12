@@ -1,0 +1,5 @@
+<seq oversample=false fw=256 fh=256>
+
+  <seq id=a width=2 mono="wnoise1()" />
+  <seq mono="min($a[x*8,y*8],min($a[x*4,y*4],min($a[x*2,y*2],$a[x,y])))" />
+</seq>

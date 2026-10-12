@@ -1,0 +1,6 @@
+<seq duration=4 fw=320 fh=240 oversample=true>
+<seq id=ripple min=-1 
+ mono="sin(min(pi2,32*pi2*d-t*pi2*16))*sqrt(1-t)*max(0,1-d*2)*.5" />
+<seq id=cloud width=4 min=-1 id=noise hsv=".25,fnoise(),1" />
+<seq pix="$cloud[x+($ripple-.5),y+($ripple-.5)]" />
+</seq>

@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QTS language reference</title>
+<link rel="icon" href="assets/icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1><a href="./">QTS</a> <small>language reference</small></h1>
+  <nav><a class="about" href="./">Editor</a> <a class="about" href="about.html">About</a></nav>
+</header>
+<article>
+
+<h2>Scripts</h2>
+<p>A script is a tree of <code>&lt;seq&gt;</code> tags. A sequence either plots a formula, or contains other
+sequences, which are layered back to front in the order written. Every sequence has a start time
+(<code>debut</code>, in seconds, relative to its parent) and a <code>duration</code>; a container lasts as long
+as its children need. Children inherit all of their parent's properties.</p>
+<pre>// a two-second movie, 320x240 at 24 fps, oversampled
+&lt;seq fw=320 fh=240 framerate=24 oversample&gt;
+  &lt;seq id=a debut=0 duration=1 center width=4 min=-1 mono="fnoise(x,y,t)" /&gt;
+  &lt;seq debut=last duration=1 hsv=".6, $a, 1-$a" /&gt;
+&lt;/seq&gt;</pre>
+<p>Values are numbers, bare words or quoted strings; a formula goes in quotes. <code>debut=last</code> means
+"when the previous sibling ends". Times may be written <code>mm:ss</code>. Comments start with <code>//</code>.</p>
+
+<h3>Sequence properties</h3>
+<table>
+<tr><td>id=name</td><td>lets other formulas sample this sequence as <code>$name</code></td></tr>
+<tr><td>debut, duration</td><td>start (seconds, or <code>last</code>) and length</td></tr>
+<tr><td>mono="f"</td><td>plot a grey value</td></tr>
+<tr><td>rgb="r,g,b"</td><td>plot red, green, blue</td></tr>
+<tr><td>hsv="h,s,v"</td><td>plot hue (0–1 around the wheel), saturation, value</td></tr>
+<tr><td>pix="f" / triple="f"</td><td>plot a formula that returns a colour (a sample, <code>rgb()</code>, <code>hsv()</code>, or a grey value)</td></tr>
+<tr><td>min, max</td><td>the range of the formula's result that maps to black..white (default 0..1); formulas</td></tr>
+<tr><td>wrap</td><td>values outside min..max wrap around instead of clipping</td></tr>
+<tr><td>left, top, width, height</td><td>the field of x,y the picture covers (default 0,0 to 1, with height keeping the aspect); formulas, evaluated per frame</td></tr>
+<tr><td>center</td><td>left,top are the centre instead of the corner</td></tr>
+<tr><td>endwidth</td><td>width at the end of the sequence: a zoom</td></tr>
+<tr><td>zoom, zoomfunc</td><td>zoom factor per frame (instead of endwidth) and a curve of t for it (default <code>t</code>)</td></tr>
+<tr><td>oversample</td><td>average four samples per pixel</td></tr>
+<tr><td>cycle</td><td>rotate the values by 1/256 per frame</td></tr>
+<tr><td>tile</td><td>when sampled by another sequence, coordinates wrap</td></tr>
+<tr><td>image="file"</td><td>the picture for <code>sample()</code>, <code>r[x,y]</code> and <code>iw</code>, <code>ih</code> (PNG, JPEG, GIF, BMP; add your own with Images…)</td></tr>
+<tr><td>recurse</td><td>iteration limit for the fractal functions (default 64)</td></tr>
+<tr><td>p0, q0 (jx, jy)</td><td>the Julia constant</td></tr>
+<tr><td>chop=mode</td><td>how this layer combines with what is below: normal, multiply, screen, overlay, lighten, darken, difference, exclusion, softlight, hardlight</td></tr>
+<tr><td>fw, fh</td><td>frame size in pixels (on the outer sequence)</td></tr>
+<tr><td>framerate</td><td>frames per second (default 12)</td></tr>
+</table>
+<p><code>&lt;map&gt;</code> is a sequence that is only ever sampled, never drawn.</p>
+
+<h2>Formulas</h2>
+<p>Ordinary arithmetic with <code>+ - * / ^</code> (or <code>**</code>), <code>%</code>/<code>mod</code>, comparisons
+<code>&lt; &lt;= = == != &lt;&gt; &gt;= &gt;</code> (giving 1 or 0), <code>&amp;&amp;</code>/<code>and</code>,
+<code>||</code>/<code>or</code>, bitwise <code>&amp; | xor ~</code>, and <code>cond ? a : b</code>.
+Case does not matter. <code>pi</code>, <code>pi2</code> (2π) and <code>e</code> are constants.</p>
+
+<h3>Variables</h3>
+<table>
+<tr><td>x, y</td><td>the point being plotted, in the sequence's field (0..1 across a default field)</td></tr>
+<tr><td>a, d</td><td>polar coordinates about the field's centre: angle (0..2π) and distance</td></tr>
+<tr><td>t</td><td>time within the sequence, 0..1</td></tr>
+<tr><td>gt</td><td>time within the whole movie, 0..1</td></tr>
+<tr><td>n, gn</td><td>frame number within the sequence / the movie</td></tr>
+<tr><td>w, h, left, top, cx, cy</td><td>the field's size, corner and centre</td></tr>
+<tr><td>px, py, pw, ph</td><td>pixel coordinates and the picture's size in pixels</td></tr>
+<tr><td>fw, fh</td><td>the frame size</td></tr>
+<tr><td>sx, sy, sz</td><td>the pixel mapped onto a sphere</td></tr>
+<tr><td>iw, ih</td><td>the image's size</td></tr>
+<tr><td>r, g, b</td><td>the image's red, green (0–255) and blue (0–1) at this pixel; <code>r[x,y]</code> etc. at a point</td></tr>
+<tr><td>z, zoom, recurse, duration, minval, maxval, p0, q0</td><td>the sequence's settings</td></tr>
+<tr><td>?</td><td>a random number 0..1</td></tr>
+</table>
+
+<h3>Sampling other sequences</h3>
+<table>
+<tr><td>$a</td><td>sequence <code>a</code> at this point and time</td></tr>
+<tr><td>$a[x, y]</td><td>at the point x,y (0..1 across a's field; wraps if a is tiled)</td></tr>
+<tr><td>$a{d, a}</td><td>at polar coordinates about a's centre</td></tr>
+<tr><td>$a[t]</td><td>at time t (0..1 of a's duration)</td></tr>
+<tr><td>$a[x, y, t]</td><td>both</td></tr>
+<tr><td>sample(), sample(x,y)</td><td>the image at this point / at x,y (0..1); <code>samptile</code> is a synonym</td></tr>
+<tr><td>samplep(), samplep(x,y)</td><td>the image by pixel</td></tr>
+</table>
+
+<h3>Functions</h3>
+<table>
+<tr><td>sin cos tan asin acos atan sinh cosh tanh</td><td>and <code>sin2</code>, <code>cos2</code>, <code>sin3</code>, <code>cos3</code> (squared, cubed)</td></tr>
+<tr><td>sqrt log log10 exp pow(x,y) pow2(x)</td><td></td></tr>
+<tr><td>int abs sign</td><td></td></tr>
+<tr><td>min(a,b) max(a,b) clamp(x,lo,hi) limit(x,lo,hi)</td><td></td></tr>
+<tr><td>angle(x,y) dist(x,y)</td><td>polar coordinates of a vector</td></tr>
+<tr><td>terp(a,b) terp(a,b,x)</td><td>interpolate a→b over the sequence's time, or by x (0..1); works on colours</td></tr>
+<tr><td>ease(x) ease()</td><td>smoothstep of x / of t</td></tr>
+<tr><td>bias(x,p) gain(x,p)</td><td>Perlin's bias and gain curves; <code>bias(p)</code> applies to t</td></tr>
+<tr><td>pinch(x) pinch(x,p)</td><td>1-(1-x)^p</td></tr>
+<tr><td>noise() noise(x,y) noise(x,y,z)</td><td>gradient noise, −1..1</td></tr>
+<tr><td>fnoise(...) </td><td>1/f noise: 8 octaves of noise</td></tr>
+<tr><td>turb(...)</td><td>turbulence: 8 octaves of |noise|</td></tr>
+<tr><td>fbm(x,y,z,H,lacunarity,octaves) fbmt(...)</td><td>fractional Brownian motion with full control (noise/fnoise/turb with 6 arguments do the same)</td></tr>
+<tr><td>noise2(x,y) noise2(x,y,p)</td><td>noise with a gain() interpolation curve</td></tr>
+<tr><td>wnoise1() wnoise2()</td><td>Worley (cell) noise: distance to the nearest and second-nearest feature point</td></tr>
+<tr><td>mand() mand(x,y)</td><td>Mandelbrot escape count at this point (0 inside the set); <code>mandel</code> too</td></tr>
+<tr><td>mandc()</td><td>continuous-potential Mandelbrot</td></tr>
+<tr><td>mand3()</td><td>the cubic Mandelbrot</td></tr>
+<tr><td>mandq() mandq(y,z)</td><td>the quaternion Mandelbrot</td></tr>
+<tr><td>julia() julia(p,q) julia(x,y,p,q)</td><td>Julia set escape count, with the sequence's p0,q0 or the given constant</td></tr>
+<tr><td>dragon()</td><td>the dragon iteration</td></tr>
+<tr><td>zebra(n,width,step,offset)</td><td>stripes</td></tr>
+<tr><td>fib(n) prime(n)</td><td>Fibonacci number; 1 if prime</td></tr>
+<tr><td>linen(t,attack,dur,decay) linenr(t,attack,decay,ratio)</td><td>envelopes (from Syd)</td></tr>
+<tr><td>rgb(r,g,b) hsv(h,s,v) triple(a,b,c)</td><td>make a colour</td></tr>
+</table>
+
+<h2 id="shader">Live shader</h2>
+<p>The <b>Live shader</b> tab, the editor's usual view, compiles the script to a GLSL fragment shader and plays it on the GPU,
+looping every <code>duration</code> seconds, at whatever size the size boxes say; edits recompile as you type. The
+<b>Frame</b> tab renders one frame with the original engine instead (WebAssembly, on every core): exact, frame-stepped,
+and the one to use where the GPU is weak. The editor remembers which tab you last used. <b>Save frame (PNG)</b> and
+<b>Render movie…</b> work from either: a movie is drawn by the shader unless the dialog says to use the original renderer
+(or the shader didn't compile), and the frames show as they are made. <b>Save shader (HTML)</b>
+writes a page that plays the loop by itself, with the shader and any images inside it (space pauses, arrows step,
+<code>s</code> saves a frame, <code>o</code> toggles oversampling). <b>Save GLSL</b> writes the fragment shader alone, in
+Shadertoy's dialect (<code>mainImage</code>, <code>iTime</code>, <code>iResolution</code>, <code>iChannel0</code>…), so it can be pasted there
+(give its channels the script's images, nearest filtering, no vertical flip).</p>
+<p>The shader follows the renderer: layers, bounds, zoom, <code>min</code>/<code>max</code>, <code>wrap</code>, <code>cycle</code>,
+<code>oversample</code>, the blend modes, sampling of other sequences and images, noise, fractals and the rest. It differs in
+being 32-bit float where the renderer is double (the deep Mandelbrot zooms in the examples, with widths of a billionth,
+dissolve into noise on the GPU; shallow ones are fine), in time being continuous rather than stepping by frames, and in
+<code>?</code> giving a different random stream. Where the formulas leave their domain (<code>bias</code>, <code>gain</code> and
+two-argument <code>ease</code> outside 0..1, for instance) the renderer makes NaNs and the GPU makes something else, and a sequence
+sampled outside its own lifetime is undefined in both. A few things can't be done in a shader: sequences that sample each
+other in a cycle, more than four images, and iteration counts (<code>recurse</code>) above 4000. Scripts that use
+<code>fnoise</code>/<code>turb</code> under several sampled layers with oversampling can be heavy; untick <b>oversample</b> for four times the speed.</p>
+
+<h2>Notes</h2>
+<ul>
+<li>This is the renderer of QTS (2001–2003), the last version of Pixel Magic, ported from its C++ source;
+the sample scripts are the originals and render as they did then, quirks included.</li>
+<li>Renders are deterministic: the same script gives the same pixels here and in the native <code>qts</code> tool.</li>
+<li>Movies render on the GPU by default; the original renderer uses every core in your machine, but it is still a
+formula per pixel per frame, so long movies take minutes that way.</li>
+</ul>
+</article>
+</body>
+</html>

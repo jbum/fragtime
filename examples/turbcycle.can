@@ -1,0 +1,11 @@
+// Continous smoke cycle
+<seq duration=4 fw=320 fh=240   
+ oversample=true framerate=24>
+  <seq id=a center=1 width=4  height="2*w*fh/fw" endwidth="4/1.5" mono="turb(x,y,t+1)" />
+  <seq id=b center=1 width="4*1.5" height="2*w*fh/fw" endwidth=4 mono="turb(x,y,t)" />
+  <seq id=c mono="terp($a,$b)" />
+  <seq id=n wrap=true rgb="?+t,?+t,?+t" />
+  <seq id=e hsv=".47-(d+$c),1-((d+$c)-.1),(d<.2? 0 : 1-((d+$c)-.35)*3)" />
+  <seq pix="terp($e,$n,0.1)" />
+ // <seq hsv=".55+(1-y)*.05,terp($a,$b)*1.2,1" />
+</seq>

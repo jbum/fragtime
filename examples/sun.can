@@ -1,0 +1,17 @@
+<seq oversample=true fw=300 fh=300 duration=4 framerate=24>
+<seq id=a center=true width=4 endwidth=2 min=0 max=1 mono="noise(x,y,t+1)" />
+<seq id=b center=true width=8 endwidth=4 min=0 max=1 mono="noise(x,y,t)" />
+<seq id=c mono="terp($a{d,a+t},$b{d,a+(pi2-1)+t})" />
+<seq id=d center=true width=12 endwidth=6 mono="turb(x,y,t+1)" />
+<seq id=e center=true startwidth=24 width=12 mono="turb(x,y,t)" />
+<seq id=f mono="terp($d,$e)" />
+<seq id=g center=true width=4 height=12 min=-1 mono="fnoise(x+t/2,y,t+1)" />
+<seq id=h center=true width=4 height=12 min=-1 mono="fnoise(x-.5+t/2,y,t)" />
+<seq id=i mono="terp($g,$h)" />
+<seq id=x width=12 endwidth=8 min=-1 mono="d+$c*2>h*.45? -1 : sin(a*int((d+$c*2)+1)^2+$f*2)" />
+<seq id=y width=18 endwidth=12 min=-1 mono="d+$c*2>h*.45? -1 : sin(a*int((d+$c*2)+1)^2+$f*2)" />
+<seq id=z mono="terp($x{d,a+t*.5},$y{d,a+(pi2-.5)+t*.5})" />
+<seq id=sun hsv="1-$z,(1-$z)*.5,bias($z,.75)" />
+<seq id=sky hsv=".6-y*.07,$i,bias(1-$i,.8)" />
+<seq pix="terp($sky,$sun,bias($sun,.85))" />
+</seq>

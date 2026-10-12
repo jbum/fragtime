@@ -1,0 +1,21 @@
+// Mona Lisa Zoom (original image is 605/790)
+<seq fw=256 fh=256 
+ oversample=true
+ moviefile="pszoom.mov"
+ framerate=12
+>
+ <seq duration=2.5>
+		  <seq id=a width=1 height=1 endwidth="iw" image="pslogo.bmp"
+      pix="samptile(cx+d*cos(a+t*pi2),cy-d*sin(a+t*pi2))" />
+		  <seq id=b width=1 height=.75 endwidth="iw" image="mona_lisa.bmp"
+      pix="sample(.5+(cx+d*cos(a+t*pi2))/iw,.375+(cy-d*sin(a+t*pi2))/iw)" />
+   <seq pix="terp($a,$b)" />
+ </seq>
+ <seq debut=2.5 duration=2.5>
+		  <seq id=c debut=0 width=1 height=.75 endwidth="iw" image="mona_lisa.bmp"
+      pix="samptile(cx+d*cos(a+t*pi2),cy-d*sin(a+t*pi2))" />
+		  <seq id=d debut=0 width=1 height=1 endwidth="iw" image="pslogo.bmp"
+      pix="sample(.5+(cx+d*cos(a+t*pi2))/iw,.5+(cy-d*sin(a+t*pi2))/iw)" />
+   <seq debut=0 pix="terp($c,$d)" />
+ </seq>
+</seq>

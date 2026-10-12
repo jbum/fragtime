@@ -1,0 +1,7 @@
+<seq left=2 top=2 fw=320 fh=240 duration=8 oversample=false>
+   <seq id=a center=1 width=4 endwidth="4/256" id=d debut=0 wrap=true min=-1 max=1 
+        hsv="noise()*.2+.5+sin(pi),-.75,sqrt(fabs(fnoise()))" />
+   <seq id=b center=1 width="4*256" endwidth=4 id=d debut=0 wrap=true min=-1 max=1 
+        hsv="noise()*.2+.5+sin(pi),-.75,sqrt(fabs(fnoise()))" />
+   <seq pix="terp($a,$b)" />
+</seq>

@@ -1,0 +1,9 @@
+<seq duration=4 oversample=true fw=320 fh=240 framerate=24 >
+  <seq id=a1 left=4 top=4 width=2 min=-1  mono="noise(x+t*2,y,t)" />
+  <seq id=a2 left=4 top=4 width=2 min=-1  mono="noise(x+t*2-2,y,t-1)" />
+  <seq id=a mono="terp($a1,$a2)" />
+  <seq id=b1 left=4 top=4 width=2 min=0  mono="turb(x+t*2,y,t,.4,2,7)" />
+  <seq id=b2 left=4 top=4 width=2 min=0  mono="turb(x+t*2-2,y,t-1,.4,2,7)" />
+  <seq id=b mono="terp($b1,$b2)" />
+  <seq hsv="$a,1-$b,$b" />
+</seq>

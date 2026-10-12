@@ -1,0 +1,8 @@
+// Move slider to make wood out of turb
+
+<seq fw=400 fh=300 duration=4 oversample=true>
+   <seq id=a debut=0 left="terp(0,7.5)" 
+        wrap=false min=-.3 max=.8 width=4 height=3
+        mono="fbmt(x/terp(1,16),y*terp(1,2),0,1,2,8)" />
+   <seq width=1 height=1 hsv="$a*.1,terp(0,$a*.8),gain($a,.5)" />
+</seq>

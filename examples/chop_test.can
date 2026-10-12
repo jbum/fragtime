@@ -1,0 +1,4 @@
+<seq>
+  <seq min=-1 width=4 mono="noise()" />
+  <seq debut=10 min=-1 mono="sin(d*32)" />
+</seq>

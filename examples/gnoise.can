@@ -1,0 +1,4 @@
+<seq duration=4 >
+<seq id=a tile=true wrap=true width=4 min=-1 mono="noise(x,y)*2" />
+<seq width="1+t" hsv="y,1,$a" />
+</seq>

@@ -1,0 +1,5 @@
+<seq fw=320 fh=240 oversample=true duration=8>
+   <seq rgb="x,y,x+y" />
+   <seq min=-1 chop=exclusion mono="sin(a-pi/4+t*pi2*4)" />
+   <seq height=1 chop=darken image="noiseetude.bmp" mono="1-samptile(x+noise(x,y,t*2)*.2,y+noise(x,y,t*2)*.2)" />
+</seq>

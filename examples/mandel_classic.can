@@ -1,0 +1,11 @@
+<seq fw=300 fh=300 oversample>
+ <seq id=ctab min=0 hsv="x,x>0,x>0" />
+ <seq center 
+  left=-.625 width=2.75
+  // width=4 
+  // left=0.357995020271 top=-0.645879227383 width=0.00000000127 endwidth=0.000000000074
+  recurse="abs(128*-log10(w))"
+  p0="t*.1" q0="t*.1"
+  pix="$ctab[mandelq()/recurse,0]"
+ />
+</seq>

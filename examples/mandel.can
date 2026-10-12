@@ -1,0 +1,17 @@
+// Original took over 8 hours at 400 x 300
+//
+<seq fw=320 fh=240 oversample=true
+  id=b debut=0 duration=4
+   left="-0.154663549147503"
+   top="1.0310219779327"
+      width=0.00000000001
+     // width=0.00022
+   endwidth=0.000000000001
+   zoomfunc="bias(t,.6)" // zoom deccel
+   height="w*ph/pw"
+   center=true
+   recurse="12800+abs(190*(-log10(w)))"
+   min=0
+   max=1
+   hsv="sqrt(abs(-cos(mand()*0.0041243+t*pi*4.5123232))),sin(mand()*.001)*.75-.5,abs(cos(mand()*0.058172+t*pi*2)))"
+  />

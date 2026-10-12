@@ -1,0 +1,6 @@
+<seq duration=4 oversample=true fw=320 fh=240 framerate=24 >
+  <seq id=b1 left=4 top=4 width=2 min=0  max=3 mono="turb(x,y+t*2,t,.4,2,7)" />
+  <seq id=b2 left=4 top=4 width=2 min=0  max=3 mono="turb(x,y+t*2-2,t-1,.4,2,7)" />
+  <seq id=b mono="terp($b1,$b2)" />
+  <seq height=1 hsv="ease(y+$b-.4,.1)*2-1,1-(y+$b-.3)^3,ease(y+$b-.3,.9)" />
+</seq>

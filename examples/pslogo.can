@@ -1,0 +1,4 @@
+<seq oversample=true>
+		<seq id=a width=1 height=1 endwidth="iw" image="pslogo.bmp"
+      pix="samptile(x,y)" />
+</seq>

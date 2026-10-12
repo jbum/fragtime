@@ -1,0 +1,4 @@
+<seq duration=8 codec='raw '>
+  <seq id=a max=1 pix="(int(a*64/pi2) & 3) == 0" />
+  <seq width=1 height=1 pix="$a[cx+d*sin(a+t*pi2),cy-d*cos(a+t*pi2)]" />
+</seq>

@@ -1,0 +1,30 @@
+// Original took over 8 hours at 400 x 300
+//
+<seq fw=320 fh=240 oversample=true duration=8 framerate=24>
+ <seq id=a 
+  left=-1.67417997120985 top=0.00029833703587
+  // p0=-1.67417997120985 q0=0.00029833703587
+     width=.1 // 0.0000000490
+  endwidth=0.000000000008
+   zoomfunc="ease(t,.75)" // zoom deccel
+   height="w*ph/pw"   center=true
+   recurse="1024+abs(190*(-log10(w)))"
+   min=-1
+   max=1
+   hsv="cos(mand()*0.0041243),-cos(mand()*.01),cos(sqrt(mand())*0.81))"
+  />
+ <seq id=b 
+      width = .1 // width=0.0000000490
+   endwidth=0.000000000008
+  left=0 top = 0 width=.1 endwidth=0.00001
+  p0="cx" q0="cy"
+   zoomfunc="ease(t,.75)" // zoom deccel
+   height="w*ph/pw"
+   center=true
+   recurse="1024+abs(190*(-log10(w)))"
+   min=-1
+   max=1
+   hsv="cos(julia()*0.0041243),-cos(julia()*.01),cos(sqrt(julia())*0.81))"
+  />
+<seq height=1 pix="terp($a,$b,x < cx)" />
+</seq>

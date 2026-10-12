@@ -1,0 +1,5 @@
+<seq fw=320 fh=240 oversample=true duration=8>
+   <seq id=a rgb="x,y,x+y" />
+   <seq id=b chop=hardlight min=-1 mono="sin(a-pi/4+t*pi2*4)" />
+   <seq id=title chop=darken height=1 image="noiseetude.bmp" mono="1-samptile(x+noise(x,y,t*2)*.2,y+noise(x,y,t*2)*.2)" />
+</seq>

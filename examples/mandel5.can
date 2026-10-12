@@ -1,0 +1,19 @@
+// Original took over 8 hours at 400 x 300
+//
+<seq fw=320 fh=240 oversample=true duration=4 framerate=24>
+ <seq id=a 
+  // left=-1.122834 top=-0.261628 width=0.000159
+  left=-1.1229042966 top=-0.2615804878 
+  // width=2
+  width=0.000159
+  endwidth=0.0000000141
+   zoomfunc="ease(t,.75)" // zoom deccel
+   height="w*ph/pw"   center=true
+   recurse="10240+abs(190*(-log10(w)))"
+   min=0
+   max=1
+   hsv=".2+.997^mand(),1-.9985^mand(),1-.9985^mand()"
+  />
+ // <seq center left=-.75 width=4 recurse=1024 
+ // mono="mand() != 0" />
+</seq>

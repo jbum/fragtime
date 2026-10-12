@@ -1,0 +1,7 @@
+// Continous smoke cycle
+<seq duration=4 fw=320 fh=240   
+ oversample=true framerate=12>
+ <seq left="2+t*2" width=3 height=1 id=a min=-1 mono="fnoise(cx+(x-cx)*(1+y)^3.5,(y+1)^3.5,t+1)" />
+ <seq left="t*2" width=3 height=1 id=b min=-1 mono="fnoise(cx+(x-cx)*(1+y)^3.5,(y+1)^3.5,t)" />
+ <seq hsv=".53+(1-y)*.07,terp($a,$b)*1.4,1" />
+</seq>

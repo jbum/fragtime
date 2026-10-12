@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>QTS renderer benchmark</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  article { max-width: 1000px; }
+  td.num { text-align: right; font-family: var(--mono); }
+  tr.faster-js td:first-child { color: #7fd97f; }
+  tr.faster-wasm td:first-child { color: #f0a030; }
+</style>
+</head>
+<body>
+<header><h1><a href="./">QTS</a> <small>renderer benchmark: JavaScript vs WebAssembly</small></h1></header>
+<article>
+<p>Renders the frame at t = 0.5 of every example (not Noise Etude) with the JS engine on this thread and
+with qts.wasm in one worker, single-threaded both, and compares the pixels. <button id="go" class="primary">Run</button>
+<span id="status"></span></p>
+<table id="table"><thead><tr><th>script</th><th>size</th><th>JS ms</th><th>wasm ms</th><th>wasm / JS</th><th>pixels</th></tr></thead><tbody></tbody></table>
+<p id="summary"></p>
+</article>
+<script type="module" src="bench.js"></script>
+</body>
+</html>

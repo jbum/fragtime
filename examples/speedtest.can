@@ -1,0 +1,11 @@
+<seq id=main 
+ fw=320 fh=240
+ wrap=true oversample=false
+ // moviecodec='raw ' 
+ // dither=true
+ moviefile="spiral2.mov"
+ seamless=true
+ max=pi
+ duration=1
+ rgb="log(d)*3-a-pi/2-(t*pi*4),log(d)*3+a-(t*pi*2),log(d)*3+a+pi/2-(t*pi*8)"
+ / > 

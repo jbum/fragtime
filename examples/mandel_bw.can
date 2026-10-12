@@ -1,0 +1,9 @@
+<seq fw=320 fh=240>
+// 3200 2400
+ <seq center 
+  // left=-.625 width=2.75
+  left=0.357995020271 top=-0.645879227383 width=0.00000000127 endwidth=0.000000000074
+  recurse="abs(512*-log10(w))"
+  pix="1-(mand() & 2048)"
+ />
+</seq>

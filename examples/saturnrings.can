@@ -1,0 +1,8 @@
+// Perlin Eclipse
+<seq duration=4 width=1.7 fw=512 fh=512   
+ oversample=true framerate=24 moviefile="eclipse.mov">
+  <seq id=a center=1 width=16  
+       mono="turb(x,y,t+1)" />
+  // colorize and add disc
+  <seq id=e hsv="sin(d*12)*.5+.5,d,d>.82? 0 : 1-(sin(d*100+$a*4)*.5+.5)^3" />
+</seq>

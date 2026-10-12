@@ -1,0 +1,13 @@
+// Perlin Eclipse
+<seq duration=4 width=1.7 fw=512 fh=384   
+ oversample=true framerate=24 moviefile="eclipse.mov">
+  <seq id=a center=1 width=4  height="2*w*fh/fw" endwidth="4/2" mono="turb(x,y,t+1)" />
+  <seq id=b center=1 width="4*2" height="2*w*fh/fw" endwidth=4 mono="turb(x,y,t)" />
+  // Mix two turb layers
+  <seq id=c mono="terp($a,$b)" />
+  // colorize and add disc
+  <seq id=e hsv=".47-(d+$c),1-((d+$c)-.1),(d<.2? 0 : 1-((d+$c)-.35)*3)" />
+  // add grain
+  // <seq id=n wrap=true rgb="?,?,?" /> // grain
+  // <seq pix="terp($e,$n,0.1)" /> 
+</seq>

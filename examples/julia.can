@@ -1,0 +1,19 @@
+// Original took over 8 hours at 400 x 300
+//
+<seq fw=512 fh=384 oversample=true duration=8 framerate=24>
+ <seq id=b 
+  left=0 top=0 width=.05
+  // endwidth=0.00001
+  p0=-1.67417997120985 q0=0.00029833703587
+   zoomfunc="ease(t,.75)" // zoom deccel
+   height="w*ph/pw"
+   center=true
+   recurse="1024+abs(190*(-log10(w)))"
+   min=-1
+   max=1
+   // hsv="cos(julia(x,y)*0.0041243),-cos(julia(x,y)*.01),cos(sqrt(julia())*0.81))"
+   hsv="0,0,cos(sqrt( julia(jx+.0001*sin(pi2*(x-left)/w),jy+.0001*cos(pi2*(x-left)/w) )*0.81))" 
+  />
+
+
+</seq>

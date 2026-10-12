@@ -1,0 +1,17 @@
+// mandel 640x480 20secs 24fps took (3.6 hours)
+//
+<seq fw=640 fh=480 oversample=true duration=20 framerate=24>
+ <seq id=a 
+  left=-1.43651772995062 top=0.0000217991717
+  width=4 // width=0.0000000094
+  endwidth=0.00000000000282
+   zoomfunc="ease(t,.75)" // zoom deccel
+   height="w*ph/pw"   center=true
+   recurse="terp(64,8024,t*t)+abs(190*(-log10(w)))"
+   min=-1
+   max=1
+   // wrap=true
+  hsv="-sin(sqrt(mand())*0.21243),-cos(sqrt(mand())*.15928),mand()==0? -1 : cos(sqrt(mand())*0.30282)*.9"
+  // hsv="sin(man3()*.003192),cos(manc()*.005182),-cos(manc()*.1)" // mono="manc()"
+  />
+</seq>

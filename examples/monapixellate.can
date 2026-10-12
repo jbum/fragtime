@@ -1,0 +1,43 @@
+<seq fw=240 fh=320 oversample=false>
+  <seq id=mona image="mona_lisa.bmp" duration=16 width=1 height=1 pix="samp(x,y)" />
+  <seq duration=2>							 
+    <seq id=a width="pw/1" height="ph/1" pix="$mona[x/pw,y/ph]" />
+    <seq id=b width="pw/2" height="ph/2" pix="$mona[int(x)/w,int(y)/h]" />
+    <seq pix="terp($a,$b)" />
+			</seq>
+  <seq debut=2 duration=2>							 
+    <seq id=c debut=0 width="pw/2" height="ph/2" pix="$mona[int(x)/w,int(y)/h]" />
+    <seq id=d debut=0 width="pw/4" height="ph/4" pix="$mona[int(x)/w,int(y)/h]" />
+    <seq debut=0 pix="terp($c,$d)" />
+			</seq>
+  <seq debut=4 duration=2>							 
+    <seq id=e debut=0 width="pw/4" height="ph/4" pix="$mona[int(x)/w,int(y)/h]" />
+    <seq id=f debut=0 width="pw/8" height="ph/8" pix="$mona[int(x)/w,int(y)/h]" />
+    <seq debut=0 pix="terp($e,$f)" />
+			</seq>
+  <seq debut=6 duration=2>							 
+    <seq id=g debut=0 width="pw/8" height="ph/8" pix="$mona[int(x)/w,int(y)/h]" />
+    <seq id=h debut=0 width="pw/16" height="ph/16" pix="$mona[int(x)/w,int(y)/h]" />
+    <seq debut=0 pix="terp($g,$h)" />
+			</seq>
+  <seq debut=8 duration=2>							 
+    <seq id=i debut=0 width="pw/16" height="ph/16" pix="$mona[int(x)/w,int(y)/h]" />
+    <seq id=j debut=0 width="pw/32" height="ph/32" pix="$mona[int(x)/w,int(y)/h]" />
+    <seq debut=0 pix="terp($i,$j)" />
+			</seq>
+  <seq debut=10 duration=2>							 
+    <seq id=k debut=0 width="pw/32" height="ph/32" pix="$mona[int(x)/w,int(y)/h]" />
+    <seq id=l debut=0 width="pw/64" height="ph/64" pix="$mona[int(x)/w,int(y)/h]" />
+    <seq debut=0 pix="terp($k,$l)" />
+			</seq>
+  <seq debut=12 duration=2>							 
+    <seq id=m debut=0 width="pw/64" height="ph/64" pix="$mona[int(x)/w,int(y)/h]" />
+    <seq id=n debut=0 width="pw/128" height="ph/128" pix="$mona[int(x)/w,int(y)/h]" />
+    <seq debut=0 pix="terp($m,$n)" />
+			</seq>
+  <seq debut=14 duration=2>							 
+    <seq id=o debut=0 width="pw/128" height="ph/128" pix="$mona[int(x)/w,int(y)/h]" />
+    <seq id=p debut=0 width="pw/256" height="ph/256" pix="$mona[int(x)/w,int(y)/h]" />
+    <seq debut=0 pix="terp($o,$p)" />
+			</seq>
+</seq>

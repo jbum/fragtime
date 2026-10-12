@@ -1,0 +1,6 @@
+<seq duration=4 fw=320 fh=240 oversample=true>
+<seq id=ripple min=-1 
+ mono="sin(min(pi2,32*pi2*d-t*pi2*16))*(1-t)^2*max(0,1-d*2)*.2" />
+<seq id=title height=1 image="noiseetude.bmp" mono="samptile(x,y)" />
+<seq height=1 pix="$title[x+($ripple-.5)+noise(x*2,y*2,t*2)*.1,y+($ripple-.5)+noise(x*2,y*2,t*2)*.1]" />
+</seq>

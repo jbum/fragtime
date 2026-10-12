@@ -1,0 +1,19 @@
+// Original took over 8 hours at 400 x 300
+//
+<seq fw=640 fh=480 oversample=true duration=30 framerate=24>
+ <seq id=b 
+  left=0 top=0 width=.049
+  // endwidth=0.00001
+  p0="-1.67417997120985-cos(t*pi2)*.000023)" 
+  q0="0.00029833703587+sin(t*pi2)*.000023"
+   zoomfunc="ease(t,.75)" // zoom deccel
+   height="w*ph/pw"
+   center=true
+   recurse="1024*8"
+   min=-1
+   max=1
+   hsv="cos(julia(x,y)*0.0041243),-cos(julia(x,y)*.0182627+sin(t*pi2)),cos(sqrt(julia())*0.8112982))"
+  />
+
+
+</seq>

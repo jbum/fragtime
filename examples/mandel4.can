@@ -1,0 +1,17 @@
+// 1.5 hours to make 10 seconds at 24 fps, 320x240
+//
+<seq fw=320 fh=240 oversample=true duration=10 framerate=24>
+ <seq id=a 
+  // left=-1.122834 top=-0.261628 width=3
+  left=-1.1229042966 top=-0.2615804878 width=4
+  endwidth=0.0000000141
+   zoomfunc="ease(t,.75)" // zoom deccel
+   height="w*ph/pw"   center=true
+   recurse="10240+abs(190*(-log10(w)))"
+   min=-1
+   max=1
+   hsv="-cos(mand()*0.00041243),cos(mand()*0.04321232),-cos((mand()^(.65+t*.1))*0.12343)"
+  />
+ // <seq center left=-.75 width=4 recurse=1024 
+ // mono="mand() != 0" />
+</seq>

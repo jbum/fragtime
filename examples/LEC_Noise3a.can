@@ -1,0 +1,15 @@
+// Move slider to make clouds
+
+<seq fw=400 fh=300 duration=4 oversample=true >
+<seq debut=0 duration=4>
+   <seq id=a wrap=false  min=-1 max=1 width=4 height=4
+        mono="fbm(x,y,0,1,2,terp(1,8))" />   
+  <seq hsv="abs(.6-y*.1),0,1-$a" />
+</seq>
+<seq debut=4 duration=4>
+   <seq id=b wrap=false left="t*1.5" min=-1 max=1 width=4 height=4
+        mono="fbm(x/terp(1,2),y,0,1,2,8)" />   
+  <seq hsv="abs(.6-y*.1),terp(0,$b*.7-y*.6),terp(1-$b,(1.5-y)-gain($b*.5,.9)))" />
+</seq>
+
+</seq>

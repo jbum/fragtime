@@ -1,0 +1,10 @@
+// Perlin Eclipse
+<seq duration=1 width=1.7 fw=256 fh=256  
+ oversample=true framerate=16 moviefile="explosion.mov">
+  <seq id=a center=1 width=4  height="2*w*fh/fw" endwidth="4/2" mono="turb(x,y,t+1)" />
+  <seq id=b center=1 width="4*2" height="2*w*fh/fw" endwidth=4 mono="turb(x,y,t)" />
+  // Mix two turb layers
+  <seq id=c mono="terp($a,$b)" />
+  // colorize and add disc
+  <seq id=e hsv=".47-(d*2+$c),1-((d+$c)-.1),(1+cos(d*16-t*2*pi)/2)*  1-((d+$c)-.35)*2.7" />
+</seq>

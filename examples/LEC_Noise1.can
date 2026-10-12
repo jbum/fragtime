@@ -1,0 +1,4 @@
+<seq fw=400 fh=400 width=4 height=4>
+   <seq id=a debut=0 wrap=true min=-1 max=1 
+        mono=" y < 1 ? fbm(x,y,0,1,2,1) : (y < 2? fbm(x*2,y*2,0,1,2,1) : (y < 3? fbm(x*4,y*4,0,1,2,1) : fbm(x*8,y*8,0,1,2,1)))" />
+</seq>

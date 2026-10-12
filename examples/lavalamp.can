@@ -1,0 +1,10 @@
+// Move slider to make clouds
+
+<seq fw=400 fh=300 duration=4 oversample=true >
+   <seq id=a wrap=false  min=-1 width=8 mono="noise(x,y+t,t*4)" />
+   <seq id=b wrap=false  min=-1 width=8 mono="noise(x,y+t-1,t*4-4)" />
+   <seq id=c mono="terp($a,$b)" />
+
+   <seq width=1 height=1 hsv="1-$c,1-($c-.5)*3,$c < .5? 0 : gain($c,.8)" />
+
+</seq>

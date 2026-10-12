@@ -1,0 +1,14 @@
+// Original took over 8 hours at 400 x 300
+//
+<seq fw=512 fh=384 oversample=true duration=8 framerate=24>
+<seq id=ctab min=-1 max=1 hsv="cos(x*pi2*1/w),-cos(x*pi*3/w),cos(x*pi*1/w)" />
+ <seq id=a 
+  left=-1.6245972206733 top=0.002246580095 
+  width=0.000000225
+  endwidth=0.000000000045
+   zoomfunc="ease(t,.75)" // zoom deccel
+   height="w*ph/pw"   center=true
+   recurse="256*(-log10(0.000000000045))"
+  pix="$ctab[mand()/recurse,0]"
+  />
+</seq>

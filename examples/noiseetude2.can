@@ -1,0 +1,9 @@
+<seq fw=160 fh=120 oversample=false framerate=12 >
+  <seq debut=0 duration=16> // zoom in, modify coloring
+    <seq id=cp9a center=true left=2 width=4 endwidth="4/256" mono="turb(x,y,t*terp(4,1))" />
+    <seq id=cp9b center=true left=2 width="4*256" endwidth=4 mono="sqrt(turb(x,y,t*4-4))" />
+    <seq id=n9 center=true left=2 width=4 mono="noise(x,y,t*4-4)" />
+    <seq id=cp9 mono="terp($cp9a,$cp9b,ease(t))" />
+    <seq hsv="terp(.6,$n9)+y*terp(.49,1),$cp9-.5,1-$cp9" />
+  </seq>
+</seq>

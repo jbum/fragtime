@@ -1,0 +1,6 @@
+<seq duration=4 framerate=8 fw=600 fh=600 oversample>
+<seq id=r max=64 width=64000 mono="a*110 xor sqrt(d)" wrap />
+<seq id=g max=16 width=64000 mono="a*110 xor sqrt(d)" wrap/>
+<seq id=b max=2 width=64000 mono="a*110 xor sqrt(d)" wrap/>
+<seq rgb="$r,$g,$b" />
+</seq>
