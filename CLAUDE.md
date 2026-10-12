@@ -88,8 +88,8 @@ See README.md for the layout; this file is what isn't obvious from the code.
   the default view (remembered per browser in localStorage; falls back to Frame without WebGL2), and
   movies render from the shader unless the dialog says "the original renderer" (one draw per frame at
   the renderer's frame time f/n·duration, `VideoFrame(canvas)` into WebCodecs, or toBlob for PNGs; the
-  frames show on the canvas as they go). `tests/editor_test.js` drives the built site in headless
-  Chrome **on the real GPU** (`--use-angle=metal` works headless) and checks a saved frame, PNG and MP4
+  frames show on the canvas as they go). `tests/editor_test.js -x fire.can` (an example *name*, not a
+  path: a path 404s and the shader never starts) drives the built site in headless Chrome **on the real GPU** (`--use-angle=metal` works headless) and checks a saved frame, PNG and MP4
   movies from both engines against native qts. `tests/shader_test.js -g -s -f 0.95 -d dir` likewise
   (real GPU, timings, a late frame, picture dumps). Unlisted presets: `NOT_SHADER` and `SCAFFOLDING`
   in build_web.py (deep-zoom fractals + julia2; the LEC_ noise studies, clouds, title/credit tests that
