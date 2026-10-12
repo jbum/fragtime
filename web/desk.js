@@ -78,23 +78,13 @@ export class Desk {
     }
     return { x0, y0, x1, y1 };
   }
-  // the whole patch in view; open: a patch too big to read whole opens on its Output instead
-  fit(open) {
-    this.autoFit = !open;
+  // the whole patch in view
+  fit() {
+    this.autoFit = true;
     const b = this.bounds(), W = this.wrap.clientWidth, H = this.wrap.clientHeight;
     if (!W || !H) return;
     const z = Math.min(1.5, (W - 30) / (b.x1 - b.x0), (H - 30) / (b.y1 - b.y0));
-    if (open && z < 0.45) {
-      this.zoom = 0.6;
-      const out = G.outputNode(this.app.patch);
-      if (out) {
-        this.view.x = out.x + NODE_W + 40 - W / this.zoom;
-        this.view.y = out.y + nodeHeight(out) / 2 - H / this.zoom / 2;
-        this.draw();
-        return;
-      }
-    }
-    this.zoom = Math.max(0.1, z);
+    this.zoom = Math.max(0.05, z);
     this.view.x = (b.x0 + b.x1) / 2 - W / this.zoom / 2;
     this.view.y = (b.y0 + b.y1) / 2 - H / this.zoom / 2;
     this.draw();
@@ -383,7 +373,7 @@ export class Desk {
   zoomAt(cx, cy, factor) {
     this.autoFit = false;
     const p = this.toPatch({ clientX: cx, clientY: cy }), r = this.wrap.getBoundingClientRect();
-    this.zoom = Math.max(0.1, Math.min(4, this.zoom * factor));
+    this.zoom = Math.max(0.05, Math.min(4, this.zoom * factor));
     this.view.x = p.x - (cx - r.left) / this.zoom;
     this.view.y = p.y - (cy - r.top) / this.zoom;
     this.drawSoon();
@@ -466,7 +456,7 @@ export class Desk {
       this.touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
       if (!this.pinch || this.touches.size < 2) return;
       const [a, b] = [...this.touches.values()], r = wrap.getBoundingClientRect();
-      this.zoom = Math.max(0.1, Math.min(4, this.pinch.z0 * Math.hypot(a.x - b.x, a.y - b.y) / this.pinch.d0));
+      this.zoom = Math.max(0.05, Math.min(4, this.pinch.z0 * Math.hypot(a.x - b.x, a.y - b.y) / this.pinch.d0));
       this.view.x = this.pinch.anchor.x - ((a.x + b.x) / 2 - r.left) / this.zoom;
       this.view.y = this.pinch.anchor.y - ((a.y + b.y) / 2 - r.top) / this.zoom;
       this.drawSoon();

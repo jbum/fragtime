@@ -19,7 +19,7 @@ import { Inspector } from "./inspector.js";
 
 const $ = (s) => document.querySelector(s);
 const STORAGE = "fragtime-editor";
-const FIRST_EXAMPLE = "sun";
+const FIRST_EXAMPLE = "spiral2";
 const THUMB_W = 96, THUMB_H = 72;
 
 const NEW_PATCH = () => ({ fragtime: 1, title: "untitled", nodes: [
@@ -585,7 +585,7 @@ function load(patch, name, opts = {}) {
   app.desk.selWire = null;
   app.desk.errors = new Map();
   if (opts.frac !== undefined) { state.frac = opts.frac; ui.slider.value = String(opts.frac); }
-  app.desk.fit(true);
+  app.desk.fit();
   app.inspector.render();
   if (sourceShown) showSource(true);
   save();

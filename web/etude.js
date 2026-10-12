@@ -9,7 +9,7 @@ import { ShaderPlayer } from "./shader.js";
 const $ = (s) => document.querySelector(s);
 const PATCH = "examples/noiseetude.fragtime";
 const box = $("#etudeBox"), canvas = $("#etudeView"), video = $("#etudeMovie"), poster = $("#etudePoster");
-const playBtn = $("#etudePlay"), status = $("#etudeStatus"), toggle = $("#etudeToggle"), movieLink = $("#etudeMovieLink");
+const playBtn = $("#etudePlay"), status = $("#etudeStatus"), toggle = $("#etudeToggle");
 let player = null, started = false;
 
 function fmt(t) { return `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`; }
@@ -74,6 +74,5 @@ playBtn.onclick = start;
 poster.onclick = start;
 canvas.onclick = () => { if (!player) return; if (player.playing) { player.pause(); status.textContent += " (paused)"; } else player.play(); };
 toggle.onclick = (e) => { e.preventDefault(); showMovie(""); };
-movieLink.onclick = (e) => { e.preventDefault(); showMovie(""); };
 addEventListener("resize", fit);
 addEventListener("keydown", (e) => { if (e.key === " " && player && !canvas.hidden && document.activeElement === document.body) { e.preventDefault(); canvas.onclick(); } });
