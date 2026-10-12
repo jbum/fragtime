@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Assemble the qts.jbum.com site in build/web.
+"""Assemble the fragtime.jbum.com site in build/web.
 
 Copies web/, the wasm build (build/wasm-web, made by build_wasm.sh) and the examples,
 renders a thumbnail of every example with the native qts (make first), writes
@@ -146,8 +146,8 @@ def main():
             font = small = ImageFont.load_default()
         for dx, dy in ((2, 2), (0, 0)):
             col = (0, 0, 0) if (dx, dy) == (2, 2) else (255, 255, 255)
-            draw.text((50 + dx, 470 + dy), "QTS – Pixel Magic in the browser", font=font, fill=col)
-            draw.text((52 + dx, 550 + dy), "a formula for every pixel, plus time — qts.jbum.com", font=small, fill=col)
+            draw.text((50 + dx, 470 + dy), "Fragtime – Pixel Magic in the browser", font=font, fill=col)
+            draw.text((52 + dx, 550 + dy), "a formula for every pixel, plus time — fragtime.jbum.com", font=small, fill=col)
         card.save(os.path.join(assets, "card.png"))
 
     # the editor's relative links on the about page

@@ -1,6 +1,14 @@
-# QTS / Pixel Magic — working notes
+# Fragtime — working notes
 
-Owner: Jim Bumgardner (jbum). Started 2026-10-10. Live at https://qts.jbum.com/.
+Owner: Jim Bumgardner (jbum). Live at https://fragtime.jbum.com/. Started 2026-10-12 as an
+exact copy of ~/Documents/websites/pixelmagic (QTS / Pixel Magic, qts.jbum.com, kept as it was for
+history; that repo and site are not to be changed from here). The name plays on QTS = QuickTime
+Synthesizer: Fragtime = fragment shaders over time. The big change to come is the editor (node-based
+vs hierarchical list, under discussion). Everything below still describes the inherited code.
+
+## QTS / Pixel Magic notes (inherited)
+
+Started 2026-10-10.
 See README.md for the layout; this file is what isn't obvious from the code.
 
 ## Where things came from

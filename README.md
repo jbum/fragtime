@@ -1,9 +1,15 @@
-# QTS / Pixel Magic
+# Fragtime
+
+The successor of **QTS / Pixel Magic** (https://qts.jbum.com/, repo jbum/pixelmagic, kept as it was):
+Fragtime starts from an exact copy of that code and moves on to a shader-first editor. Live at
+**https://fragtime.jbum.com/**. The rest of this file still describes the code as ported.
+
+## QTS / Pixel Magic
 
 The renderer of **QTS** ("QuickTime Synthesizer", 2001–2003), the last form of Jim Bumgardner's
 *Pixel Magic* (1995–), ported from its Windows/MFC C++ sources to a portable library, a native
 command-line tool and WebAssembly. A script gives a formula for every pixel, plus time; QTS turns it
-into stills and movies. Live at **https://qts.jbum.com/**.
+into stills and movies. (Its original home: https://qts.jbum.com/.)
 
 - `src/` — the library: `expr_*` (the Pixel Magic expression language: compiler and stack VM, noise,
   fractals), `seq.*` (the `<seq>` script parser and sequence/time logic), `renderer.*` (layers,
