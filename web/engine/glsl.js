@@ -16,7 +16,7 @@ export class GLSLError extends Error {}
 // ---------------------------------------------------------------- the library
 
 // name -> [dependencies, source]; only what a script uses is emitted
-const LIB = {
+export const LIB = {
   qts_trunc: [[], `float qts_trunc(float v) { return v < 0.0 ? ceil(v) : floor(v); }`],
   qts_int: [["qts_trunc"], `int qts_int(float v) { return int(clamp(qts_trunc(v), -2147483000.0, 2147483000.0)); }`],
   qts_imod: [[], `int qts_imod(int a, int b) { return b == 0 ? 0 : a - b * (a / b); }`],
@@ -281,7 +281,7 @@ float qts_charvar(sampler2D s, int c, float px, float py, float pw, float ph) {
 LIB.qts_image[0].push("qts_wrap", "qts_trunc");
 
 // the gradient table, exactly as funcs.js builds it
-function gradientText() {
+export function gradientText() {
   const R_A = 16807, R_M = 2147483647, R_Q = 127773, R_R = 2836;
   let seed = 665;
   const next = () => { const hi = Math.trunc(seed / R_Q), lo = seed % R_Q, test = R_A * lo - R_R * hi; seed = test > 0 ? test : test + R_M; return seed; };
@@ -296,7 +296,7 @@ function gradientText() {
 }
 
 // a GLSL float literal
-function f(v) {
+export function f(v) {
   if (!isFinite(v)) return v > 0 ? "1e30" : v < 0 ? "(-1e30)" : "0.0";
   let s = String(v);
   if (/e/.test(s)) s = v.toFixed(20).replace(/0+$/, "");
@@ -307,7 +307,7 @@ function f(v) {
 
 // ---------------------------------------------------------------- expression codegen
 
-const VARMAP = {
+export const VARMAP = {
   "V.localScaledTime": "c.t", "V.globalScaledTime": "c.gt", "V.x": "c.x", "V.y": "c.y", "V.widthVal": "c.w",
   "V.heightVal": "c.h", "V.recur": "float(c.recur)", "V.localFrameNbr": "c.n", "V.globalFrameNbr": "c.gn",
   "V.fw": "c.fw", "V.fh": "c.fh", "V.p0": "c.p0", "V.q0": "c.q0", "V.px": "c.px", "V.py": "c.py", "V.pw": "c.pw",
@@ -320,7 +320,7 @@ const VARMAP = {
   "F.sphereZ(V.px/V.fw,V.py/V.fh)": "qts_sphere(c.px/c.fw,c.py/c.fh).z",
 };
 
-class Gen {
+export class Gen {
   constructor(compiler, seq) {
     this.cc = compiler; this.seq = seq;
     this.pre = [];          // statements computed once per pixel before the expression (fast fractal forms)
@@ -367,18 +367,7 @@ class Gen {
       }
       case "seq": {
         const a = node.args.map((k) => this.F(this.gen(k)));
-        const target = this.cc.seqForID(node.id);
-        if (!target) return this.vec("vec3(0.0)");
-        this.cc.depend(this.seq, target);
-        const fn = `qts_samp${target.glslIndex}`;
-        switch (node.code) {
-          case "s": return this.vec(`${fn}(c,c.x,c.y,false,0.0)`);
-          case "st": return this.vec(`${fn}(c,c.x,c.y,true,${a[0]})`);
-          case "sxy": return this.vec(`${fn}(c,${a[0]},${a[1]},false,0.0)`);
-          case "sxyt": return this.vec(`${fn}(c,${a[0]},${a[1]},true,${a[2]})`);
-          case "sda": { const d = a[0], an = a[1]; return this.vec(`${fn}(c,0.5+cos(${an})*(${d}),0.5-sin(${an})*(${d}),false,0.0)`); }
-        }
-        break;
+        return this.cc.sampleCall(this, node, a);
       }
       case "op": {
         const g = node.args.map((k) => this.gen(k));
@@ -498,6 +487,27 @@ class Gen {
   }
 }
 
+// the argument list of a sampler call, after `prefix` (which ends in "("): v1, v2, hasT, tval
+export function sampleArgs(prefix, code, a) {
+  switch (code) {
+    case "s": return `${prefix}c.x,c.y,false,0.0)`;
+    case "st": return `${prefix}c.x,c.y,true,${a[0]})`;
+    case "sxy": return `${prefix}${a[0]},${a[1]},false,0.0)`;
+    case "sxyt": return `${prefix}${a[0]},${a[1]},true,${a[2]})`;
+    case "sda": return `${prefix}0.5+cos(${a[1]})*(${a[0]}),0.5-sin(${a[1]})*(${a[0]}),false,0.0)`;
+  }
+  throw new GLSLError("bad sequence reference");
+}
+
+// the library functions a compiler asked for (its `used` set), dependencies first
+export function libraryText(used) {
+  const lib = [];
+  const emitted = new Set();
+  const emit = (name) => { if (emitted.has(name)) return; emitted.add(name); for (const d of LIB[name][0]) emit(d); lib.push(LIB[name][1].replace("__GRADIENTS__", name === "qts_tables" ? gradientText() : "")); };
+  for (const name of Object.keys(LIB)) if (used.has(name)) emit(name);
+  return lib.join("\n");
+}
+
 // ---------------------------------------------------------------- the script compiler
 
 const PROPKEYS = ["left", "top", "width", "height", "zoomFac", "zoomFunc", "min", "max", "recurse", "p0", "q0", "endWidth"];
@@ -522,6 +532,13 @@ export class GLSLCompiler {
   }
   seqForID(id) { return this.script.seqByID[id - 1] || null; }
   depend(from, to) { if (!this.deps.has(from)) this.deps.set(from, new Set()); this.deps.get(from).add(to); }
+  // the code for a $name reference (node.code: s, st, sxy, sxyt, sda) with its arguments a
+  sampleCall(gen, node, a) {
+    const target = this.seqForID(node.id);
+    if (!target) return gen.vec("vec3(0.0)");
+    this.depend(gen.seq, target);
+    return gen.vec(sampleArgs(`qts_samp${target.glslIndex}(c,`, node.code, a));
+  }
   imageUnit(img) {
     let i = this.images.indexOf(img);
     if (i < 0) {
@@ -565,11 +582,7 @@ export class GLSLCompiler {
     for (const s of this.seqs) visit(s, []);
     const mainText = this.mainImage(main, fps);
     // library (after everything that may ask for a function)
-    const lib = [];
-    const emitted = new Set();
-    const emit = (name) => { if (emitted.has(name)) return; emitted.add(name); for (const d of LIB[name][0]) emit(d); lib.push(LIB[name][1].replace("__GRADIENTS__", name === "qts_tables" ? gradientText() : "")); };
     this.use("qts_trunc"); this.use("qts_wrap"); this.use("qts_hsv");
-    for (const name of Object.keys(LIB)) if (this.used.has(name)) emit(name);
 
     const title = (S.main.p.movieFilename || "qts").replace(/[^\w.-]/g, "_");
     out.push(`// ${title}: a QTS script compiled to GLSL by qts.jbum.com
@@ -583,7 +596,7 @@ struct Ctx { float x, y, t, gt, w, h, n, gn, fw, fh, p0, q0, px, py, pw, ph, cx,
 
 float qts_sq(float v) { return v * v; }
 float qts_cube(float v) { return v * v * v; }
-${lib.join("\n")}
+${libraryText(this.used)}
 `);
     for (const s of order) out.push(bodies.get(s));
     out.push(mainText);
