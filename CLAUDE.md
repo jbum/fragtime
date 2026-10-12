@@ -4,7 +4,7 @@ Owner: Jim Bumgardner (jbum). Live at https://fragtime.jbum.com/. Started 2026-1
 exact copy of ~/Documents/websites/pixelmagic (QTS / Pixel Magic, qts.jbum.com, kept as it was for
 history; that repo and site are not to be changed from here). The name plays on QTS = QuickTime
 Synthesizer: Fragtime = fragment shaders over time. No GitHub remote yet (local git only).
-`COMPETITION.md` is jbum's own research notes: leave it uncommitted (it's in .git/info/exclude).
+`local/` holds jbum's own uncommitted notes (e.g. `local/COMPETITION.md`, research on similar tools); `local/*` is gitignored.
 
 ## The node editor (PLAN.md phases 0–4 done, 2026-10-12)
 jbum chose a graph of coarse nodes over a hierarchical list ("node-editor is probably more flexible
